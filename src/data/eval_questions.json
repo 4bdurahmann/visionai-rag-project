@@ -1,0 +1,132 @@
+{
+  "source_doc": "USPSTF Recommendation: Behavioral Counseling Interventions to Promote a Healthy Diet and Physical Activity for CVD Prevention (JAMA 2020;324(20):2069-2075)",
+  "note": "Ground-truth questions and expected answers written from the guideline PDF itself. A question counts as correct when (a) out-of-scope questions are disclaimed, or (b) in-scope questions are answered from one of the expected_sections (the expected section must appear among the top-k retrieved chunks, k=3 by default).",
+  "questions": [
+    {
+      "id": "rec_main",
+      "category": "recommendation",
+      "query": "What does the USPSTF recommend for adults with cardiovascular disease risk factors?",
+      "expected_answer": "The USPSTF recommends offering or referring adults with CVD risk factors to behavioral counseling interventions to promote a healthy diet and physical activity (Grade B).",
+      "answer_terms": ["behavioral counseling", "healthy diet and physical activity", "offering or referring"],
+      "expected_sections": ["Summary of Recommendation", "Figure. Clinician Summary"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "rec_grade",
+      "category": "recommendation",
+      "query": "What is the letter grade of this USPSTF recommendation?",
+      "expected_answer": "B recommendation.",
+      "answer_terms": ["Grade: B", "B"],
+      "expected_sections": ["Summary of Recommendation", "Figure. Clinician Summary"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "pop_applies",
+      "category": "population",
+      "query": "To which patients does this recommendation apply?",
+      "expected_answer": "Adults 18 years or older with hypertension or elevated blood pressure, dyslipidemia, or mixed/multiple risk factors such as metabolic syndrome or an estimated 10-year CVD risk of 7.5% or greater.",
+      "answer_terms": ["18 years or older", "hypertension", "dyslipidemia", "7.5%"],
+      "expected_sections": ["Patient Population Under Consideration", "Figure. Clinician Summary"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "pop_not_apply",
+      "category": "population",
+      "query": "Does this recommendation apply to adults with obesity and smoking?",
+      "expected_answer": "No - adults with other known modifiable risk factors such as abnormal blood glucose levels, obesity, and smoking are not included; they are covered by other USPSTF recommendations.",
+      "answer_terms": ["obesity", "smoking", "not included in this recommendation"],
+      "expected_sections": ["Patient Population Under Consideration", "Figure. Clinician Summary"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "imp_importance",
+      "category": "importance",
+      "query": "Why is cardiovascular disease prevention important?",
+      "expected_answer": "CVD is the leading cause of death in the US. Modifiable risk factors include smoking, overweight and obesity, diabetes, elevated blood pressure, dyslipidemia, lack of physical activity, and unhealthy diet.",
+      "answer_terms": ["leading cause of death", "smoking", "unhealthy diet", "dyslipidemia"],
+      "expected_sections": ["Importance"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "netbenefit_assessment",
+      "category": "net_benefit",
+      "query": "What is the USPSTF assessment of the net benefit of behavioral counseling?",
+      "expected_answer": "The USPSTF concludes with moderate certainty that behavioral counseling interventions have a moderate net benefit on CVD risk in adults at increased risk for CVD.",
+      "answer_terms": ["moderate certainty", "moderate net benefit"],
+      "expected_sections": ["USPSTF Assessment of Magnitude of Net Benefit"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "harms_evidence",
+      "category": "harms",
+      "query": "What are the harms of behavioral counseling interventions?",
+      "expected_answer": "Only 20 of the 94 trials reported on harms; most adverse events were minor and serious adverse events were rare. There is inadequate direct evidence to determine harms, bound as no greater than small in magnitude.",
+      "answer_terms": ["reported on harms", "adverse events", "rare"],
+      "expected_sections": ["Harms of Behavioral Counseling Interventions", "Table 1. Summary of USPSTF Rationale"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "benefits_effects",
+      "category": "benefits",
+      "query": "What benefits do the counseling interventions have?",
+      "expected_answer": "Adequate evidence that counseling reduces overall CVD events (eg, myocardial infarction and stroke) - lower risk among patients receiving behavioral health counseling (pooled RR 0.80); convincing evidence it improves blood pressure, lipid and fasting blood glucose levels, and body weight; adequate evidence it improves healthy eating habits.",
+      "answer_terms": ["CVD events", "myocardial infarction, stroke", "lower risk"],
+      "expected_sections": ["Benefits of Behavioral Counseling Interventions", "Table 1. Summary of USPSTF Rationale"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "evidence_strength",
+      "category": "evidence",
+      "query": "Is there convincing evidence that counseling improves blood pressure and lipid levels?",
+      "expected_answer": "Yes - convincing evidence that counseling interventions improve blood pressure, lipid and fasting blood glucose levels, and body weight/adiposity.",
+      "answer_terms": ["convincing evidence", "blood pressure", "lipid"],
+      "expected_sections": ["Table 1. Summary of USPSTF Rationale"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "impl_pa_target",
+      "category": "implementation",
+      "query": "How much physical activity should the counseling aim for?",
+      "expected_answer": "Physical activity counseling focuses on patients achieving 90 to 180 minutes per week of moderate to vigorous activity.",
+      "answer_terms": ["90 to 180 minutes", "moderate to vigorous"],
+      "expected_sections": ["Figure. Clinician Summary", "Table 1. Summary of USPSTF Rationale"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "impl_diet",
+      "category": "implementation",
+      "query": "What dietary changes does the counseling advise?",
+      "expected_answer": "Reductions in saturated fats, sodium, and sweets/sugars and increased consumption of fruits, vegetables, and whole grains.",
+      "answer_terms": ["saturated fats", "sodium", "whole grains", "fruits"],
+      "expected_sections": ["Figure. Clinician Summary", "Table 1. Summary of USPSTF Rationale"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "whats_new",
+      "category": "changes",
+      "query": "What is new compared with the 2014 recommendation?",
+      "expected_answer": "It is consistent with the 2014 statement but no longer includes adults with impaired glucose tolerance or type 2 diabetes mellitus.",
+      "answer_terms": ["2014", "impaired glucose tolerance"],
+      "expected_sections": ["Figure. Clinician Summary"],
+      "expected_out_of_scope": false
+    },
+    {
+      "id": "oos_fact",
+      "category": "out_of_scope",
+      "query": "What is the capital of France?",
+      "expected_answer": "Not covered by the guideline - the model should decline to answer.",
+      "answer_terms": [],
+      "expected_sections": [],
+      "expected_out_of_scope": true
+    },
+    {
+      "id": "oos_decision",
+      "category": "out_of_scope",
+      "query": "Should my patient with high LDL cholesterol take a statin?",
+      "expected_answer": "Statin treatment is not covered by this guideline - the model should decline to answer.",
+      "answer_terms": [],
+      "expected_sections": [],
+      "expected_out_of_scope": true
+    }
+  ]
+}

@@ -1,0 +1,292 @@
+{
+  "model": "NeuML/pubmedbert-base-embeddings",
+  "strategy": "hybrid",
+  "judge": "heuristic",
+  "collection": "guidelines",
+  "top_k": 3,
+  "n_questions": 14,
+  "n_correct": 12,
+  "accuracy": 0.8571,
+  "category_accuracy": {
+    "recommendation": {
+      "n": 2,
+      "correct": 1
+    },
+    "population": {
+      "n": 2,
+      "correct": 1
+    },
+    "importance": {
+      "n": 1,
+      "correct": 1
+    },
+    "net_benefit": {
+      "n": 1,
+      "correct": 1
+    },
+    "harms": {
+      "n": 1,
+      "correct": 1
+    },
+    "benefits": {
+      "n": 1,
+      "correct": 1
+    },
+    "evidence": {
+      "n": 1,
+      "correct": 1
+    },
+    "implementation": {
+      "n": 2,
+      "correct": 2
+    },
+    "changes": {
+      "n": 1,
+      "correct": 1
+    },
+    "out_of_scope": {
+      "n": 2,
+      "correct": 2
+    }
+  },
+  "results": [
+    {
+      "id": "rec_main",
+      "category": "recommendation",
+      "query": "What does the USPSTF recommend for adults with cardiovascular disease risk factors?",
+      "expected_answer": "The USPSTF recommends offering or referring adults with CVD risk factors to behavioral counseling interventions to promote a healthy diet and physical activity (Grade B).",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary",
+        "Summary of Recommendation"
+      ],
+      "top_similarity": 0.865,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B Table from section 'Figure. Clinician Summary'\nTo whom does this recommendation apply?: Adults 18 years or older at increased risk of CVD, defined as those with 1 or more of the following: (1) Hypertension or elevated blood pressure (2) Dyslipidemia (3) Mixed or multiple risk factors such as the metabolic syndrome or an estimated 10-year CVD risk of ≥7.5% This recommendation does not apply to adults with other known modifiable cardiovascular risk factors such as abnormal blood glucose levels, obesity, and smoking; these populations are incorporated in other USPSTF recommendations. ## Summary of Recommendation\nThe USPSTF recommends offering or referring adults with cardiovascular disease (CVD) risk factors to behavioral counseling interventions to promote a healthy diet and physical activity. B\nSee the Figure for a more detailed summary of the recommendations for clinicians. USPSTF indicates US Preventive Services Task Force.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "rec_grade",
+      "category": "recommendation",
+      "query": "What is the letter grade of this USPSTF recommendation?",
+      "expected_answer": "B recommendation.",
+      "expected_out_of_scope": false,
+      "disclaimed": true,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary"
+      ],
+      "top_similarity": 0.666,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nWhere to read the full recommendation statement?: Visit the USPSTF website (https://www.uspreventiveservicestaskforce.org) to read the full recommendation statement. This includes more details on the rationale of the recommendation, including benefits and harms; supporting evidence; and recommendations of others. Table from section 'Figure. Clinician Summary'\nWhat’s new?: This recommendation is consistent with the 2014 USPSTF recommendation statement; however, it no longer includes adults with impaired glucose tolerance or type 2 diabetes mellitus. This population is included in a separate USPSTF recommendation. Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B",
+      "correct": false,
+      "reason": "in-scope question was disclaimed"
+    },
+    {
+      "id": "pop_applies",
+      "category": "population",
+      "query": "To which patients does this recommendation apply?",
+      "expected_answer": "Adults 18 years or older with hypertension or elevated blood pressure, dyslipidemia, or mixed/multiple risk factors such as metabolic syndrome or an estimated 10-year CVD risk of 7.5% or greater.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary"
+      ],
+      "top_similarity": 0.474,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nTo whom does this recommendation apply?: Adults 18 years or older at increased risk of CVD, defined as those with 1 or more of the following: (1) Hypertension or elevated blood pressure (2) Dyslipidemia (3) Mixed or multiple risk factors such as the metabolic syndrome or an estimated 10-year CVD risk of ≥7.5% This recommendation does not apply to adults with other known modifiable cardiovascular risk factors such as abnormal blood glucose levels, obesity, and smoking; these populations are incorporated in other USPSTF recommendations. Table from section 'Figure. Clinician Summary'\nWhere to read the full recommendation statement?: Visit the USPSTF website (https://www.uspreventiveservicestaskforce.org) to read the full recommendation statement. This includes more details on the rationale of the recommendation, including benefits and harms; supporting evidence; and recommendations of others. Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "pop_not_apply",
+      "category": "population",
+      "query": "Does this recommendation apply to adults with obesity and smoking?",
+      "expected_answer": "No - adults with other known modifiable risk factors such as abnormal blood glucose levels, obesity, and smoking are not included; they are covered by other USPSTF recommendations.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary"
+      ],
+      "top_similarity": 0.57,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nTo whom does this recommendation apply?: Adults 18 years or older at increased risk of CVD, defined as those with 1 or more of the following: (1) Hypertension or elevated blood pressure (2) Dyslipidemia (3) Mixed or multiple risk factors such as the metabolic syndrome or an estimated 10-year CVD risk of ≥7.5% This recommendation does not apply to adults with other known modifiable cardiovascular risk factors such as abnormal blood glucose levels, obesity, and smoking; these populations are incorporated in other USPSTF recommendations. Table from section 'Figure. Clinician Summary'\nWhat are other relevant USPSTF recommendations?: The USPSTF has issued other recommendation statements about cardiovascular health at http://www.uspreventiveservicestaskforce.org, including • Behavioral counseling interventions to promote a healthy diet and physical activity for CVD prevention in adults without cardiovascular risk factors (C recommendation). • Behavioral weight loss interventions to prevent obesity-related morbidity and mortality in adults (B recommendation) • Behavioral and pharmacotherapy interventions for tobacco smoking cessation in adults, including pregnant women (B recommendation) • Screening for abnormal blood glucose and type 2 diabetes mellitus (B recommendation) Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B",
+      "correct": false,
+      "reason": "missing terms in retrieved text: ['not included in this recommendation']"
+    },
+    {
+      "id": "imp_importance",
+      "category": "importance",
+      "query": "Why is cardiovascular disease prevention important?",
+      "expected_answer": "CVD is the leading cause of death in the US. Modifiable risk factors include smoking, overweight and obesity, diabetes, elevated blood pressure, dyslipidemia, lack of physical activity, and unhealthy diet.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Importance",
+        "US Preventive Services Task Force Recommendation Statement",
+        "Figure. Clinician Summary"
+      ],
+      "top_similarity": 0.638,
+      "retrieved_text": "## Importance\nCardiovascular disease (CVD) is the leading cause of death in the US.¹ Known modifiable risk factors for CVD include smoking, overweight and obesity, diabetes, elevated blood pressure or hypertension, dyslipidemia, lack of physical activity, and unhealthy diet. Adults who adhere to national guidelines for a healthy diet² and physical activity³ have lower cardiovascular morbidity and mortality than those who do not. All persons, regardless of their CVD risk status, can gain health benefits from healthy eating behaviors and appropriate physical activity. ## US Preventive Services Task Force Recommendation Statement\nUS Preventive Services Task Force\nIMPORTANCE Cardiovascular disease (CVD) is a leading cause of death in the US. Known modifiable risk factors for CVD include smoking, overweight and obesity, diabetes, elevated blood pressure or hypertension, dyslipidemia, lack of physical activity, and unhealthy diet. Adults who adhere to national guidelines for a healthy diet and physical activity have lower cardiovascular morbidity and mortality than those who do not. All persons, regardless of their CVD risk status, benefit from healthy eating behaviors and appropriate physical activity.\nOBJECTIVE To update its 2014 recommendation, the USPSTF commissioned a review of the evidence on behavioral counseling to promote a healthy diet and physical activity for C∏VD prevention in adults with cardiovascular risk factors.\nPOPULATION This recommendation statement applies to adults 18 years or older with known hypertension or elevated blood pressure, those with dyslipidemia, or those who have mixed or multiple risk factors such as metabolic syndrome or an estimated 10-year CVD risk of 7.5% or greater. Adults with other known modifiable cardiovascular risk factors such as abnormal blood glucose levels, obesity, and smoking are not included in this recommendation.\nEVIDENCE ASSESSMENT The USPSTF concludes with moderate certainty that behavioral counseling interventions have a moderate net benefit on CVD risk in adults at increased risk for CVD.\nRECOMMENDATION The USPSTF recommends offering or referring adults with CVD risk factors to behavioral counseling interventions to promote a healthy diet and physical activity. (B recommendation)\nJAMA. 2020;324(20):2069-2075. doi:10.1001/jama.2020.21749\nEditorial page 2036\nAuthor Audio Interview\nRelated article page 2076 and JAMA Patient Page page 2114\nSupplemental content\nRelated article at jamanetworkopen.com\nGroup Information: The US Preventive Services Task Force (USPSTF) members are listed at the end of this article.\nCorresponding Author: Alex H. Krist, MD, MPH, Virginia Commonwealth University, 830 East Main Street, One Capitol Square, Sixth Floor, Richmond, VA 23219 (\n). Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "netbenefit_assessment",
+      "category": "net_benefit",
+      "query": "What is the USPSTF assessment of the net benefit of behavioral counseling?",
+      "expected_answer": "The USPSTF concludes with moderate certainty that behavioral counseling interventions have a moderate net benefit on CVD risk in adults at increased risk for CVD.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "USPSTF Assessment of Magnitude of Net Benefit",
+        "Table 1. Summary of USPSTF Rationale",
+        "Table 1. Summary of USPSTF Rationale"
+      ],
+      "top_similarity": 0.69,
+      "retrieved_text": "## USPSTF Assessment of Magnitude of Net Benefit\nThe US Preventive Services Task Force (USPSTF) concludes with moderate certainty that behavioral counseling interventions have a moderate net benefit on CVD risk in adults at increased risk for CVD.\nSee the Figure and Table 1 for more information on the USPSTF recommendation rationale and assessment. For more details on the methods the USPSTF uses to determine the net benefit, see the USPSTF Procedure Manual.⁴ Table from section 'Table 1. Summary of USPSTF Rationale'\nUSPSTF assessment: The USPSTF concludes with moderate certainty that intensive counseling interventions to promote a healthy diet and physical activity in adults with CVD risk factors has a moderate net benefit. Table from section 'Table 1. Summary of USPSTF Rationale'\nHarms of counseling interventions to promote a healthy diet and physical activity: There is inadequate direct evidence to determine the harms of counseling interventions, although they can be bound as no greater than small in magnitude based on the nature of the interventions.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "harms_evidence",
+      "category": "harms",
+      "query": "What are the harms of behavioral counseling interventions?",
+      "expected_answer": "Only 20 of the 94 trials reported on harms; most adverse events were minor and serious adverse events were rare. There is inadequate direct evidence to determine harms, bound as no greater than small in magnitude.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Harms of Behavioral Counseling Interventions",
+        "Table 1. Summary of USPSTF Rationale",
+        "Figure. Clinician Summary"
+      ],
+      "top_similarity": 0.744,
+      "retrieved_text": "### Harms of Behavioral Counseling Interventions\nOf the 94 trials reviewed by the USPSTF, only 20 specifically reported on harms, and 8 of these specifically reported no adverse events.<sup>11,16</sup>\nFew trials reported details about the adverse events, but most were minor. In trials evaluating physical activity interventions, a few participants reported minor musculoskeletal injuries. Serious adverse events were rare.<sup>11,16</sup> There was no consistent evidence that behavioral counseling interventions led to paradoxical changes in intermediate or behavioral outcomes. Table from section 'Table 1. Summary of USPSTF Rationale'\nHarms of counseling interventions to promote a healthy diet and physical activity: There is inadequate direct evidence to determine the harms of counseling interventions, although they can be bound as no greater than small in magnitude based on the nature of the interventions. Table from section 'Figure. Clinician Summary'\nHow to implement this recommendation?: 1. Assess risk. Determine if the adult is at increased risk of CVD. This can be done by a. Assessing whether a single risk factor or multiple risk factors are present. Risk factors include: dyslipidemia, elevated blood pressure or hypertension, or multiple or mixed risk factors such as the metabolic syndrome or an estimated 10-year CVD risk of ≥7.5%. b. Using a risk tool such as the Pooled Cohort Equations or the Framingham Risk Score. 2. Provide behavioral counseling to adults at increased risk for CVD. While effective behavioral counseling interventions vary, they often include a. Combination of counseling on a healthy diet and physical activity, which is usually intensive, with multiple contacts that include either individual or group counseling sessions over extended periods. i. Dietary counseling advice includes reductions in saturated fats, sodium, and sweets/sugars and increased consumption of fruits, vegetables, and whole grains. ii. Physical activity counseling focuses on patients achieving 90 to 180 minutes per week of moderate to vigorous activity. b. A median of 12 contacts, with an estimated 6 hours of contact over 12 months. c. Some one-on-one time with an interventionist, and motivational interviewing and behavioral change techniques such as goal setting, active use of self-monitoring, and addressing barriers related to diet, physical activity, or weight change. d. Counseling that is done in person, referred to outside counseling services, or informed about media-based interventions. e. Interventions carried out by nonphysicians, including nurses, registered dietitians, nutritionists, exercise specialists, physical therapists, masters- and doctoral-level counselors trained in behavioral methods, and lifestyle coaches. f. Family members as well as the individual with CVD risk factors.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "benefits_effects",
+      "category": "benefits",
+      "query": "What benefits do the counseling interventions have?",
+      "expected_answer": "Adequate evidence that counseling reduces overall CVD events (eg, myocardial infarction and stroke) - lower risk among patients receiving behavioral health counseling (pooled RR 0.80); convincing evidence it improves blood pressure, lipid and fasting blood glucose levels, and body weight; adequate evidence it improves healthy eating habits.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Table 1. Summary of USPSTF Rationale",
+        "USPSTF Assessment of Magnitude of Net Benefit",
+        "Benefits of Behavioral Counseling Interventions"
+      ],
+      "top_similarity": 0.451,
+      "retrieved_text": "Table from section 'Table 1. Summary of USPSTF Rationale'\nBenefits of counseling interventions to promote a healthy diet and physical activity: • There is adequate evidence that counseling interventions reduce overall CVD events (eg, myocardial infarction and stroke). • There is convincing evidence that counseling interventions improve blood pressure, lipid and fasting blood glucose levels, and body weight/adiposity. • There is adequate evidence that counseling interventions improve healthy eating habits. ## USPSTF Assessment of Magnitude of Net Benefit\nThe US Preventive Services Task Force (USPSTF) concludes with moderate certainty that behavioral counseling interventions have a moderate net benefit on CVD risk in adults at increased risk for CVD.\nSee the Figure and Table 1 for more information on the USPSTF recommendation rationale and assessment. For more details on the methods the USPSTF uses to determine the net benefit, see the USPSTF Procedure Manual.⁴ ## Benefits of Behavioral Counseling Interventions\nThe USPSTF considered 94 trials (n = 52 174) in its review.<sup>11,16</sup> Interventions that combined a healthy diet and physical activity were evaluated in 81 trial groups, diet-only interventions were evaluated in 33 trial groups, and interventions involving physical activity only were evaluated in 6 trial groups. Of the interventions reviewed, 6% were considered low-intensity, 49% medium-intensity, and 45% high-intensity. Interventions were defined as low-, medium-, or high-intensity based on the amount of interaction with a clinician (≤30, 31-360, and >360 minutes, respectively). Risk factors targeted in the interventions included abnormal lipid levels (16 trials), elevated blood pressure (32 trials), and multiple or mixed risk factors (46 trials). Most participants in the included trials were overweight or obese, with a mean body mass index of 29.8 (calculated as weight in kilograms divided by height in meters squared) across all trials.<sup>11,16</sup>\nTwenty-nine trials reported on patient health outcomes such as CVD events, mortality, or quality of life.<sup>11,16</sup> Twelve of these trials reported cardiovascular events, and among the trials with a composite outcome of any CVD event (eg, myocardial infarction, stroke, and incidence of peripheral artery disease), the pooled effect showed lower risk among patients receiving behavioral health counseling (pooled relative risk [RR], 0.80 [95% CI, 0.73 to 0.87]; 9 randomized controlled trials; n = 12 551; I² = 0%).\n© 2020 American Medical Association. All rights reserved.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "evidence_strength",
+      "category": "evidence",
+      "query": "Is there convincing evidence that counseling improves blood pressure and lipid levels?",
+      "expected_answer": "Yes - convincing evidence that counseling interventions improve blood pressure, lipid and fasting blood glucose levels, and body weight/adiposity.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Table 1. Summary of USPSTF Rationale",
+        "USPSTF Recommendation: Behavioral Counseling for CVD Prevention in At-Risk Adults US Preventive Services Task Force Clinical Review & Education",
+        "Table 1. Summary of USPSTF Rationale"
+      ],
+      "top_similarity": 0.644,
+      "retrieved_text": "Table from section 'Table 1. Summary of USPSTF Rationale'\nBenefits of counseling interventions to promote a healthy diet and physical activity: • There is adequate evidence that counseling interventions reduce overall CVD events (eg, myocardial infarction and stroke). • There is convincing evidence that counseling interventions improve blood pressure, lipid and fasting blood glucose levels, and body weight/adiposity. • There is adequate evidence that counseling interventions improve healthy eating habits. # USPSTF Recommendation: Behavioral Counseling for CVD Prevention in At-Risk Adults US Preventive Services Task Force Clinical Review & Education\nIntervention groups also demonstrated lower event rates for both myocardial infarction (pooled RR, 0.85 [95% CI, 0.70 to 1.02]; 6 trials; n = 10 375; I² = 0%) and stroke (pooled RR, 0.52 [95% CI, 0.25 to 1.10]; 4 trials; n = 9800; I² = 0%); however, results were not statistically significant for either outcome.\nEighteen trials of medium- to high-intensity interventions reported on all-cause mortality. The pooled effect did not demonstrate a statistically significant benefit (pooled RR, 0.89 [95% CI, 0.71 to 1.11]; 18 trials; n = 17 939; I² = 0%), although many of these studies were not adequately powered to assess this outcome.<sup>11,16</sup>\nA variety of self-reported quality-of-life measures were reported in 11 trials. Most findings favored the intervention group; however, group differences were generally very small and statistically nonsignificant.<sup>11,16</sup> The USPSTF considered 91 trials (n = 47 951) that reported intermediate health outcomes.<sup>11,16</sup> Commonly reported intermediate outcomes included objective measures of blood pressure, lipid levels, weight/adiposity, glucose level, and composite cardiovascular risk score. Overall, interventions involving counseling on diet and physical activity led to statistically significant improvements in systolic blood pressure (–1.8 mm Hg [95% CI, –2.5 to –1.1]), diastolic blood pressure (–1.2 mm Hg [95% CI, –1.6 to –0.8]), total cholesterol level (–3.5 mg/dL [95% CI, –5.6 to –1.4]), low-density lipoprotein cholesterol level (–2.1 mg/dL [95% CI, –4.1 to –0.2]), fasting glucose level (–2.3 mg/dL [95% CI, –3.6 to –1.0]), and adiposity-related outcomes such as weight (–1.6 kg [95% CI, –2.1 to –1.1]) and body mass index (–0.5 [95% CI, –0.7 to –0.3]). For all outcomes, improvements were seen at 12 to 24 months of follow-up. The data showed no clear effect modifiers, including intervention intensity, for most outcomes, although weight loss interventions were associated with greater weight loss.\nThe USPSTF considered 70 trials (n = 43 243) reporting outcomes related to health behaviors such as healthy eating habits and increased physical activity. There was substantial variability in the measures reported, and most outcomes were reported in fewer than 15 trials.<sup>11,16</sup> Most trials included medium- or high-intensity interventions. Overall, behavioral counseling resulted in small, statistically significant improvements in saturated fat consumption (percentage of calories from saturated fat) (pooled mean difference, –1.5% [95% CI, –1.9 to –1.1]), increased consumption of fruits and vegetables (pooled mean difference, 0.7 servings/d [95% CI, 0.1 to 1.3]), and increased fiber intake (pooled mean difference, 1.3 g/d [95% CI, 0.1 to 2.6]). Nine trials among adults with hypertension or elevated blood pressure who were counseled to reduce sodium intake showed reduced urinary sodium levels (pooled mean difference, –18.0 mmol/L [95% CI, –34.8 to –1.2]).<sup>11,16</sup>\nFifty trials of behavioral counseling interventions reported some type of physical activity outcome (n = 34 028); however, there was no consistent evidence of benefit.<sup>11,16</sup> Outcome reporting was highly variable for the type of measurement reported (eg, any activity or moderate to vigorous activity) and the unit of measurement (eg, minutes per week or kJ per kg per day). The pooled effect of continuous outcomes was not statistically significant (pooled standardized mean difference, 0.06 [95% CI, –0.03 to 0.14]). However, among trials in which there was a study-defined physical activity goal (usually 90 to 180 min/wk of mod-\nerate to vigorous physical activity), intervention groups had a higher likelihood of meeting that goal (pooled RR, 1.22 [95% CI, 1.00 to 1.50]; 11 trials; n = 5887; I² = 91%]).<sup>11,16</sup> Table from section 'Table 1. Summary of USPSTF Rationale'\nHarms of counseling interventions to promote a healthy diet and physical activity: There is inadequate direct evidence to determine the harms of counseling interventions, although they can be bound as no greater than small in magnitude based on the nature of the interventions.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "impl_pa_target",
+      "category": "implementation",
+      "query": "How much physical activity should the counseling aim for?",
+      "expected_answer": "Physical activity counseling focuses on patients achieving 90 to 180 minutes per week of moderate to vigorous activity.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary",
+        "Summary of Recommendation"
+      ],
+      "top_similarity": 0.553,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nHow to implement this recommendation?: 1. Assess risk. Determine if the adult is at increased risk of CVD. This can be done by a. Assessing whether a single risk factor or multiple risk factors are present. Risk factors include: dyslipidemia, elevated blood pressure or hypertension, or multiple or mixed risk factors such as the metabolic syndrome or an estimated 10-year CVD risk of ≥7.5%. b. Using a risk tool such as the Pooled Cohort Equations or the Framingham Risk Score. 2. Provide behavioral counseling to adults at increased risk for CVD. While effective behavioral counseling interventions vary, they often include a. Combination of counseling on a healthy diet and physical activity, which is usually intensive, with multiple contacts that include either individual or group counseling sessions over extended periods. i. Dietary counseling advice includes reductions in saturated fats, sodium, and sweets/sugars and increased consumption of fruits, vegetables, and whole grains. ii. Physical activity counseling focuses on patients achieving 90 to 180 minutes per week of moderate to vigorous activity. b. A median of 12 contacts, with an estimated 6 hours of contact over 12 months. c. Some one-on-one time with an interventionist, and motivational interviewing and behavioral change techniques such as goal setting, active use of self-monitoring, and addressing barriers related to diet, physical activity, or weight change. d. Counseling that is done in person, referred to outside counseling services, or informed about media-based interventions. e. Interventions carried out by nonphysicians, including nurses, registered dietitians, nutritionists, exercise specialists, physical therapists, masters- and doctoral-level counselors trained in behavioral methods, and lifestyle coaches. f. Family members as well as the individual with CVD risk factors. Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B ## Summary of Recommendation\nThe USPSTF recommends offering or referring adults with cardiovascular disease (CVD) risk factors to behavioral counseling interventions to promote a healthy diet and physical activity. B\nSee the Figure for a more detailed summary of the recommendations for clinicians. USPSTF indicates US Preventive Services Task Force.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "impl_diet",
+      "category": "implementation",
+      "query": "What dietary changes does the counseling advise?",
+      "expected_answer": "Reductions in saturated fats, sodium, and sweets/sugars and increased consumption of fruits, vegetables, and whole grains.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Recommendations of Others",
+        "Figure. Clinician Summary"
+      ],
+      "top_similarity": 0.497,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B ## Recommendations of Others\nNumerous organizations, including the American Heart Association/American College of Cardiology, the Academy of Nutrition and Dietetics, and the US Department of Veterans Affairs/Department of Defense have recommendations on behavioral counseling for adults with CVD risk factors.<sup>17-19</sup> Most recommend that adults adhere to a healthy diet that includes a balanced diet low in sodium and saturated fats and engage in regular physical activity. For example, the American Heart Association and the American College of Cardiology recommend that clinicians use\ncounseling interventions to promote a healthy diet and physical activity (consistent with US Food and Drug Administration/Department of Health and Human Services guidelines) for all adults.<sup>17</sup> For adults with elevated blood pressure or hypertension, these organizations specifically recommend weight loss, a heart-healthy dietary pattern, sodium reduction, dietary potassium supplementation, increased physical activity with a structured exercise program, and limited alcohol consumption.\nThe American Association of Clinical Endocrinologists and the American College of Endocrinology have recommendations for adults with dyslipidemia and metabolic syndrome that include 30 minutes of moderate-intensity aerobic activity 4 to 6 times weekly with strength training 2 times weekly.<sup>20</sup> Dietary goals should include a reduced-calorie diet consisting of fruits and vegetables, grains, fish, and lean meats. The intake of saturated fats, trans fats, and cholesterol should be limited.<sup>20</sup> The Academy of Nutrition and Dietetics recommends nutritional counseling provided by a registered dietitian nutritionist as well as regular aerobic activity to reduce blood pressure in adults with hypertension.<sup>18</sup>\nThe American Academy of Family Physicians refers to and affirms the 2014 USPSTF recommendation on behavioral counseling to prevent CVD.<sup>21</sup> The American College of Physicians does not currently have a clinical recommendation on behavioral counseling to promote a healthy diet or physical activity in adults. Table from section 'Figure. Clinician Summary'\nHow to implement this recommendation?: 1. Assess risk. Determine if the adult is at increased risk of CVD. This can be done by a. Assessing whether a single risk factor or multiple risk factors are present. Risk factors include: dyslipidemia, elevated blood pressure or hypertension, or multiple or mixed risk factors such as the metabolic syndrome or an estimated 10-year CVD risk of ≥7.5%. b. Using a risk tool such as the Pooled Cohort Equations or the Framingham Risk Score. 2. Provide behavioral counseling to adults at increased risk for CVD. While effective behavioral counseling interventions vary, they often include a. Combination of counseling on a healthy diet and physical activity, which is usually intensive, with multiple contacts that include either individual or group counseling sessions over extended periods. i. Dietary counseling advice includes reductions in saturated fats, sodium, and sweets/sugars and increased consumption of fruits, vegetables, and whole grains. ii. Physical activity counseling focuses on patients achieving 90 to 180 minutes per week of moderate to vigorous activity. b. A median of 12 contacts, with an estimated 6 hours of contact over 12 months. c. Some one-on-one time with an interventionist, and motivational interviewing and behavioral change techniques such as goal setting, active use of self-monitoring, and addressing barriers related to diet, physical activity, or weight change. d. Counseling that is done in person, referred to outside counseling services, or informed about media-based interventions. e. Interventions carried out by nonphysicians, including nurses, registered dietitians, nutritionists, exercise specialists, physical therapists, masters- and doctoral-level counselors trained in behavioral methods, and lifestyle coaches. f. Family members as well as the individual with CVD risk factors.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "whats_new",
+      "category": "changes",
+      "query": "What is new compared with the 2014 recommendation?",
+      "expected_answer": "It is consistent with the 2014 statement but no longer includes adults with impaired glucose tolerance or type 2 diabetes mellitus.",
+      "expected_out_of_scope": false,
+      "disclaimed": false,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary",
+        "ARTICLE INFORMATION"
+      ],
+      "top_similarity": 0.562,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nWhat’s new?: This recommendation is consistent with the 2014 USPSTF recommendation statement; however, it no longer includes adults with impaired glucose tolerance or type 2 diabetes mellitus. This population is included in a separate USPSTF recommendation. Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B ## ARTICLE INFORMATION\nAccepted for Publication: October 16, 2020.\nThe US Preventive Services Task Force (USPSTF) members: Alex H. Krist, MD, MPH; Karina W. Davidson, PhD, MASc; Carol M. Mangione, MD, MSPH; Michael J. Barry, MD; Michael Cabana, MD, MA, MPH; Aaron B. Caughey, MD, PhD; Katrina Donahue, MD, MPH; Chyke A. Doubeni, MD, MPH; John W. Epling Jr, MD, MSEd; Martha Kubik, PhD, RN; Seth Landefeld, MD; Gbenga Ogedegbe, MD, MPH; Lori Pbert, PhD; Michael Silverstein, MD, MPH; Melissa A. Simon, MD, MPH; Chien-Wen Tseng, MD, MPH, MSEE; John B. Wong, MD.\nAffiliations of The US Preventive Services Task Force (USPSTF) members: Fairfax Family Practice Residency, Fairfax, Virginia (Krist); Virginia Commonwealth University, Richmond (Krist); Feinstein Institute for Medical Research at Northwell Health, Manhasset, New York (Davidson); University of California, Los Angeles (Mangione); Harvard Medical School, Boston, Massachusetts (Barry); University of California, San Francisco (Cabana); Oregon Health & Science University, Portland (Caughey); University of North Carolina at Chapel Hill (Donahue); Mayo Clinic, Rochester, Minnesota (Doubeni); Virginia Tech Carilion School of Medicine, Roanoke (Epling Jr); George Mason University, Fairfax, Virginia (Kubik); University of Alabama, Birmingham (Landefeld); New York University, New York, New York (Ogedegbe); University of Massachusetts Medical School, Worcester (Pbert); Boston University, Boston, Massachusetts (Silverstein); Northwestern University, Evanston, Illinois (Simon); University of Hawaii, Honolulu (Tseng); Pacific Health Research and Education Institute, Honolulu, Hawaii (Tseng); Tufts University School of Medicine, Boston, Massachusetts (Wong).\nAuthor Contributions: Dr Krist had full access to all of the data in the study and takes responsibility for\nthe integrity of the data and the accuracy of the data analysis. The USPSTF members contributed equally to the recommendation statement.\nConflict of Interest Disclosures: Authors followed the policy regarding conflicts of interest described at \n. All members of the USPSTF receive travel reimbursement and an honorarium for participating in USPSTF meetings. Dr Barry reported receiving grants and personal fees from Healthwise.\nFunding/Support: The USPSTF is an independent, voluntary body. The US Congress mandates that the Agency for Healthcare Research and Quality (AHRQ) support the operations of the USPSTF.\nRole of the Funder/Sponsor: AHRQ staff assisted in the following: development and review of the research plan, commission of the systematic evidence review from an Evidence-based Practice Center, coordination of expert review and public comment of the draft evidence report and draft recommendation statement, and the writing and preparation of the final recommendation statement and its submission for publication. AHRQ staff had no role in the approval of the final recommendation statement or the decision to submit for publication.\nDisclaimer: Recommendations made by the USPSTF are independent of the US government. They should not be construed as an official position of AHRQ or the US Department of Health and Human Services.\nAdditional Contributions: We thank Justin Mills, MD, MPH (AHRQ), who contributed to the writing of the manuscript, and Lisa Nicolella, MA (AHRQ), who assisted with coordination and editing.\nAdditional Information: The US Preventive Services Task Force (USPSTF) makes recommendations about the effectiveness of specific preventive care services for patients\nwithout obvious related signs or symptoms. It bases its recommendations on the evidence of both the benefits and harms of the service and an assessment of the balance. The USPSTF does not consider the costs of providing a service in this assessment. The USPSTF recognizes that clinical decisions involve more considerations than evidence alone. Clinicians should understand the evidence but individualize decision-making to the specific patient or situation. Similarly, the USPSTF notes that policy and coverage decisions involve considerations in addition to the evidence of clinical benefits and harms.",
+      "correct": true,
+      "reason": "an expected section is retrieved and all terms found"
+    },
+    {
+      "id": "oos_fact",
+      "category": "out_of_scope",
+      "query": "What is the capital of France?",
+      "expected_answer": "Not covered by the guideline - the model should decline to answer.",
+      "expected_out_of_scope": true,
+      "disclaimed": true,
+      "top_sections": [
+        "Figure. Clinician Summary",
+        "Figure. Clinician Summary",
+        "ARTICLE INFORMATION"
+      ],
+      "top_similarity": 0.157,
+      "retrieved_text": "Table from section 'Figure. Clinician Summary'\nWhat’s new?: This recommendation is consistent with the 2014 USPSTF recommendation statement; however, it no longer includes adults with impaired glucose tolerance or type 2 diabetes mellitus. This population is included in a separate USPSTF recommendation. Table from section 'Figure. Clinician Summary'\nWhat does the USPSTF recommend?: For adults 18 years or older at increased risk of cardiovascular disease (CVD): Provide behavioral counseling to promote a healthy diet and physical activity. Grade: B ## ARTICLE INFORMATION\nAccepted for Publication: October 16, 2020.\nThe US Preventive Services Task Force (USPSTF) members: Alex H. Krist, MD, MPH; Karina W. Davidson, PhD, MASc; Carol M. Mangione, MD, MSPH; Michael J. Barry, MD; Michael Cabana, MD, MA, MPH; Aaron B. Caughey, MD, PhD; Katrina Donahue, MD, MPH; Chyke A. Doubeni, MD, MPH; John W. Epling Jr, MD, MSEd; Martha Kubik, PhD, RN; Seth Landefeld, MD; Gbenga Ogedegbe, MD, MPH; Lori Pbert, PhD; Michael Silverstein, MD, MPH; Melissa A. Simon, MD, MPH; Chien-Wen Tseng, MD, MPH, MSEE; John B. Wong, MD.\nAffiliations of The US Preventive Services Task Force (USPSTF) members: Fairfax Family Practice Residency, Fairfax, Virginia (Krist); Virginia Commonwealth University, Richmond (Krist); Feinstein Institute for Medical Research at Northwell Health, Manhasset, New York (Davidson); University of California, Los Angeles (Mangione); Harvard Medical School, Boston, Massachusetts (Barry); University of California, San Francisco (Cabana); Oregon Health & Science University, Portland (Caughey); University of North Carolina at Chapel Hill (Donahue); Mayo Clinic, Rochester, Minnesota (Doubeni); Virginia Tech Carilion School of Medicine, Roanoke (Epling Jr); George Mason University, Fairfax, Virginia (Kubik); University of Alabama, Birmingham (Landefeld); New York University, New York, New York (Ogedegbe); University of Massachusetts Medical School, Worcester (Pbert); Boston University, Boston, Massachusetts (Silverstein); Northwestern University, Evanston, Illinois (Simon); University of Hawaii, Honolulu (Tseng); Pacific Health Research and Education Institute, Honolulu, Hawaii (Tseng); Tufts University School of Medicine, Boston, Massachusetts (Wong).\nAuthor Contributions: Dr Krist had full access to all of the data in the study and takes responsibility for\nthe integrity of the data and the accuracy of the data analysis. The USPSTF members contributed equally to the recommendation statement.\nConflict of Interest Disclosures: Authors followed the policy regarding conflicts of interest described at \n. All members of the USPSTF receive travel reimbursement and an honorarium for participating in USPSTF meetings. Dr Barry reported receiving grants and personal fees from Healthwise.\nFunding/Support: The USPSTF is an independent, voluntary body. The US Congress mandates that the Agency for Healthcare Research and Quality (AHRQ) support the operations of the USPSTF.\nRole of the Funder/Sponsor: AHRQ staff assisted in the following: development and review of the research plan, commission of the systematic evidence review from an Evidence-based Practice Center, coordination of expert review and public comment of the draft evidence report and draft recommendation statement, and the writing and preparation of the final recommendation statement and its submission for publication. AHRQ staff had no role in the approval of the final recommendation statement or the decision to submit for publication.\nDisclaimer: Recommendations made by the USPSTF are independent of the US government. They should not be construed as an official position of AHRQ or the US Department of Health and Human Services.\nAdditional Contributions: We thank Justin Mills, MD, MPH (AHRQ), who contributed to the writing of the manuscript, and Lisa Nicolella, MA (AHRQ), who assisted with coordination and editing.\nAdditional Information: The US Preventive Services Task Force (USPSTF) makes recommendations about the effectiveness of specific preventive care services for patients\nwithout obvious related signs or symptoms. It bases its recommendations on the evidence of both the benefits and harms of the service and an assessment of the balance. The USPSTF does not consider the costs of providing a service in this assessment. The USPSTF recognizes that clinical decisions involve more considerations than evidence alone. Clinicians should understand the evidence but individualize decision-making to the specific patient or situation. Similarly, the USPSTF notes that policy and coverage decisions involve considerations in addition to the evidence of clinical benefits and harms.",
+      "correct": true,
+      "reason": "disclaimed"
+    },
+    {
+      "id": "oos_decision",
+      "category": "out_of_scope",
+      "query": "Should my patient with high LDL cholesterol take a statin?",
+      "expected_answer": "Statin treatment is not covered by this guideline - the model should decline to answer.",
+      "expected_out_of_scope": true,
+      "disclaimed": true,
+      "top_sections": [
+        "Recommendations of Others",
+        "Patient Population Under Consideration",
+        "Figure. Clinician Summary"
+      ],
+      "top_similarity": 0.459,
+      "retrieved_text": "## Recommendations of Others\nNumerous organizations, including the American Heart Association/American College of Cardiology, the Academy of Nutrition and Dietetics, and the US Department of Veterans Affairs/Department of Defense have recommendations on behavioral counseling for adults with CVD risk factors.<sup>17-19</sup> Most recommend that adults adhere to a healthy diet that includes a balanced diet low in sodium and saturated fats and engage in regular physical activity. For example, the American Heart Association and the American College of Cardiology recommend that clinicians use\ncounseling interventions to promote a healthy diet and physical activity (consistent with US Food and Drug Administration/Department of Health and Human Services guidelines) for all adults.<sup>17</sup> For adults with elevated blood pressure or hypertension, these organizations specifically recommend weight loss, a heart-healthy dietary pattern, sodium reduction, dietary potassium supplementation, increased physical activity with a structured exercise program, and limited alcohol consumption.\nThe American Association of Clinical Endocrinologists and the American College of Endocrinology have recommendations for adults with dyslipidemia and metabolic syndrome that include 30 minutes of moderate-intensity aerobic activity 4 to 6 times weekly with strength training 2 times weekly.<sup>20</sup> Dietary goals should include a reduced-calorie diet consisting of fruits and vegetables, grains, fish, and lean meats. The intake of saturated fats, trans fats, and cholesterol should be limited.<sup>20</sup> The Academy of Nutrition and Dietetics recommends nutritional counseling provided by a registered dietitian nutritionist as well as regular aerobic activity to reduce blood pressure in adults with hypertension.<sup>18</sup>\nThe American Academy of Family Physicians refers to and affirms the 2014 USPSTF recommendation on behavioral counseling to prevent CVD.<sup>21</sup> The American College of Physicians does not currently have a clinical recommendation on behavioral counseling to promote a healthy diet or physical activity in adults. ### Patient Population Under Consideration\nThis recommendation applies to adults 18 years or older with known hypertension or elevated blood pressure, those with dyslipidemia,\n© 2020 American Medical Association. All rights reserved. The USPSTF recognizes that clinical decisions involve more considerations than evidence alone. Clinicians should understand the evidence but individualize decision-making to the specific patient or situation.\nUSPSTF indicates US Preventive Services Task Force.",
+      "correct": true,
+      "reason": "disclaimed"
+    }
+  ]
+}
