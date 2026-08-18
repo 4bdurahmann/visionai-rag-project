@@ -11,3 +11,8 @@ rag
 # secrets
 .env
 
+# generated artifacts (rebuildable from the source JSON/PDF)
+src/data/chroma/
+src/data/embedded_chunks.json
+src/data/accuracy_results.json
+
