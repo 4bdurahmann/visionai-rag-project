@@ -28,7 +28,7 @@ Response:
       "query", "k", "strategy",
       "disclaimed": bool, "reason": "low_similarity|low_fusion|no_grade_for_decision|none",
       "message":   "natural-language answer, or the disclaimer text",
-      "hits":      [{"rank","similarity","fused","grade","section","org","text"}],
+      "hits":      [{"rank","similarity","grade","section","org","text"}],
       "accuracy":  "Model accuracy: ... (or null)"
     }
 """
@@ -126,7 +126,6 @@ def query(req: QueryRequest):
             {
                 "rank": i,
                 "similarity": round(sim, 4),
-                "fused": round(fused, 4),
                 "grade": meta.get("grade") or extract_grade(doc),
                 "section": meta.get("heading"),
                 "org": meta.get("org"),

@@ -32,6 +32,75 @@ from pathlib import Path
 from sentence_transformers import SentenceTransformer
 
 _TABLE_TITLE_RE = re.compile(r"^(Table|Figure)(\s+\d+)?[.:]")
+_SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
+_TOKEN_PER_WORD = 1.35  # rough EN word->token heuristic (no tokenizer dependency)
+
+
+def _est_tokens(text: str) -> int:
+    return max(1, int(len(text.split()) * _TOKEN_PER_WORD))
+
+
+def _split_on_sentences(paragraph: str, max_tokens: int) -> list[str]:
+    """Split one oversized paragraph into sentence-bounded pieces."""
+    pieces, buf, buf_tok = [], [], 0
+    for s in _SENTENCE_RE.split(paragraph.strip()):
+        t = _est_tokens(s)
+        if buf and buf_tok + t > max_tokens:
+            pieces.append(" ".join(buf))
+            buf, buf_tok = [], 0
+        buf.append(s)
+        buf_tok += t
+    if buf:
+        pieces.append(" ".join(buf))
+    return [p for p in pieces if p.strip()]
+
+
+def _chunk_section(text: str, max_tokens: int, overlap_tokens: int) -> list[str]:
+    """
+    Split a prose section into chunks of ~max_tokens, preferring paragraph
+    then sentence boundaries, with a sliding-window token overlap if requested.
+    The heading line (if present) is kept on every chunk for attribution.
+    """
+    lines = text.split("\n")
+    heading = lines[0] if lines and lines[0].startswith("#") else None
+    body = "\n".join(lines[1:]) if heading else text
+    prefix = (heading + "\n") if heading else ""
+
+    # collect sentence-level units so the sliding window can cut at clean edges
+    units: list[str] = []
+    for para in body.split("\n\n"):
+        para = para.strip()
+        if not para:
+            continue
+        if _est_tokens(para) <= max_tokens:
+            units.append(para)
+        else:
+            units.extend(_split_on_sentences(para, max_tokens))
+
+    chunks, cur, cur_tok = [], [], 0
+    for u in units:
+        t = _est_tokens(u)
+        if cur and cur_tok + t > max_tokens:
+            chunks.append(" ".join(cur))
+            if overlap_tokens > 0 and cur:
+                tail = []
+                tail_tok = 0
+                for w in reversed(cur):
+                    wt = _est_tokens(w)
+                    if tail_tok + wt > overlap_tokens:
+                        break
+                    tail.insert(0, w)
+                    tail_tok += wt
+                cur = tail
+                cur_tok = tail_tok
+            else:
+                cur, cur_tok = [], 0
+        cur.append(u)
+        cur_tok += t
+    if cur:
+        chunks.append(" ".join(cur))
+
+    return [(prefix + c).strip() for c in chunks if c.strip()]
 
 
 def _split_table_rows(caption: str, rows, md: str) -> list[str]:
@@ -58,11 +127,17 @@ def _split_table_rows(caption: str, rows, md: str) -> list[str]:
     return [f"{caption}\n{part}" for part in parts]
 
 
-def load_and_chunk(json_path: str, doc_meta: dict | None = None) -> list[dict]:
+def  load_and_chunk(json_path: str, doc_meta: dict | None = None,
+                    max_tokens: int = 0, overlap_tokens: int = 0) -> list[dict]:
     """
     Turn LlamaParse-style page/item JSON into heading-bounded chunks,
     keeping tables isolated with a short caption so they embed meaningfully
     on their own instead of being merged into surrounding prose.
+
+    max_tokens > 0: prose sections are split into chunks of ~that many tokens
+    (paragraph -> sentence boundaries; approximate token count via words*1.35).
+    overlap_tokens > 0: a sliding-window token overlap between consecutive
+    prose chunks. Tables are untouched (already split row-by-row).
 
     doc_meta (e.g. {"org": "USPSTF", "doc_title": ..., "source_url": ...})
     is stamped onto every chunk so the vector-store artifact keeps its
@@ -82,14 +157,25 @@ def load_and_chunk(json_path: str, doc_meta: dict | None = None) -> list[dict]:
         if current_buffer:
             text = "\n".join(current_buffer).strip()
             if text:
-                chunks.append(
-                    {
-                        "type": "section",
-                        "heading": current_heading,
-                        "text": text,
-                        **doc_meta,
-                    }
-                )
+                if max_tokens > 0 and current_heading:
+                    for piece in _chunk_section(text, max_tokens, overlap_tokens):
+                        chunks.append(
+                            {
+                                "type": "section",
+                                "heading": current_heading,
+                                "text": piece,
+                                **doc_meta,
+                            }
+                        )
+                else:
+                    chunks.append(
+                        {
+                            "type": "section",
+                            "heading": current_heading,
+                            "text": text,
+                            **doc_meta,
+                        }
+                    )
 
     for p in pages:
         for it in p["items"]:
@@ -180,6 +266,12 @@ if __name__ == "__main__":
     parser.add_argument("--org", default="USPSTF")
     parser.add_argument("--doc-title", default="")
     parser.add_argument("--source-url", default="")
+    parser.add_argument("--max-tokens", type=int, default=0,
+                        help="split long prose sections into chunks of ~N tokens "
+                             "(rough EN heuristic words*1.35; 0 = no splitting)")
+    parser.add_argument("--overlap-tokens", type=int, default=0,
+                        help="sliding-window token overlap between prose chunks "
+                             "(only used when --max-tokens is set; default 0)")
     args = parser.parse_args()
 
     meta = {
@@ -192,7 +284,9 @@ if __name__ == "__main__":
         if v
     }
 
-    chunks = load_and_chunk(args.json_path, doc_meta=meta)
+    chunks = load_and_chunk(args.json_path, doc_meta=meta,
+                            max_tokens=args.max_tokens,
+                            overlap_tokens=args.overlap_tokens)
     print(f"Built {len(chunks)} chunks")
 
     chunks = embed_chunks(chunks)

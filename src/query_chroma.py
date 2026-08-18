@@ -139,7 +139,7 @@ def main():
         url = meta.get("source_url") or ""
 
         grade_str = f"Grade {grade}" if grade else "Grade n/a"
-        print(f"[Hit {i}] similarity={sim:.3f} | fused={fused:.4f} | {grade_str} | {org}")
+        print(f"[Hit {i}] similarity={sim:.3f} | {grade_str} | {org}")
         if heading:
             print(f"  section: {heading}")
         if title or url:

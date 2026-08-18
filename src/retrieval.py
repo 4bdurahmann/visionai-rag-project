@@ -1,10 +1,10 @@
 """
 Medical RAG - Shared retrieval backends (vector-only and hybrid BM25+vector)
 ---------------------------------------------------------------------------
-Both strategies query a Chroma collection. Hybrid search fuses the HNSW vector
-ranking with a BM25 keyword ranking via Reciprocal Rank Fusion (RRF), which
-helps exact-name queries that a pure semantic search can miss (e.g. short
-section titles like "Scope of Review").
+Both strategies query a Chroma collection. In hybrid mode, BM25 candidates are
+used as a recall extension, but hits are always ranked by pure vector cosine
+similarity (the RRF-fused score is still reported for reference but does not
+drive the ordering).
 
 Embedding space is cosine with normalized vectors (see index_chroma.py), so
 vector similarity = 1 - distance.
@@ -38,7 +38,7 @@ def load_corpus(collection) -> dict:
 class HybridRetriever:
     def __init__(self, collection, strategy: str = "hybrid"):
         """
-        strategy: "hybrid" (BM25 + vector, RRF-fused) or "vector".
+        strategy: "hybrid" (BM25 recall + vector similarity ranking) or "vector".
         """
         self.collection = collection
         self.strategy = strategy
@@ -55,10 +55,9 @@ class HybridRetriever:
     def search(self, query_text: str, query_vector, k: int, depth: int = 40):
         """
         Return up to k results as list of (cid, sim, fused, doc, meta).
-        sim   - cosine similarity from the vector ranking (0.0 for BM25-only hits)
-        fused - RRF score = sum of 1/(RRF_K + rank + 1) over the vector and BM25
-                rankings; the actual ordering key (equals sim in vector mode).
-        Ranking order is the strategy's order.
+        sim   - cosine similarity from the vector ranking (the ordering key)
+        fused - RRF score over vector + BM25 ranks (reported for reference only)
+        Ranking order is always by descending vector similarity.
         """
         depth = max(depth, k)
 
@@ -92,7 +91,9 @@ class HybridRetriever:
         for rank, cid in enumerate(bm25_ranks):
             fused[cid] = fused.get(cid, 0.0) + 1.0 / (RRF_K + rank + 1)
 
-        ordered = [cid for cid, _ in sorted(fused.items(), key=lambda x: x[1], reverse=True)]
+        # rank by pure vector similarity (the fused score is still reported for
+        # reference but no longer drives the ordering)
+        ordered = sorted(vector_sims, key=vector_sims.get, reverse=True)
         return self._to_hits(ordered[:k], vector_sims, fused)
 
     def _to_hits(self, ordered: list[str], vector_sims: dict, fused: dict):
