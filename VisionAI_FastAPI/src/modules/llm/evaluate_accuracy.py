@@ -96,7 +96,7 @@ def main():
     with open(args.questions, encoding="utf-8") as f:
         questions = json.load(f)["questions"]
 
-    model = SentenceTransformer(args.model)
+    model = SentenceTransformer(args.model, device=config.select_device())
     client = chromadb.PersistentClient(path=args.db)
     collection = client.get_collection(args.collection)
     retriever = HybridRetriever(collection, strategy=args.strategy)

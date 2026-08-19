@@ -31,6 +31,8 @@ import re
 
 from sentence_transformers import SentenceTransformer
 
+from core import config
+
 _TABLE_TITLE_RE = re.compile(r"^(Table|Figure)(\s+\d+)?[.:]")
 _SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
 _TOKEN_PER_WORD = 1.35  # rough EN word->token heuristic (no tokenizer dependency)
@@ -244,7 +246,7 @@ def embed_chunks(
     """
     Encode each chunk's text into a dense vector using a biomedical-domain model.
     """
-    model = SentenceTransformer(model_name)
+    model = SentenceTransformer(model_name, device=config.select_device())
     texts = [c["text"] for c in chunks]
     vectors = model.encode(
         texts,

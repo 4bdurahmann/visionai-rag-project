@@ -100,7 +100,7 @@ def main():
     args = parser.parse_args()
     sizes = [int(x) for x in args.sizes.split(",")]
     overlaps = [int(x) for x in args.overlaps.split(",")]
-    model = SentenceTransformer(MODEL)
+    model = SentenceTransformer(MODEL, device=config.select_device())
     run_sweep(sizes, overlaps, args.k, model)
 
 

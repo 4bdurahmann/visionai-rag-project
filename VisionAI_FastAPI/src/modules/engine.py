@@ -31,7 +31,7 @@ def get_engine() -> SimpleNamespace:
         ``retriever`` attributes.
     """
     if get_engine.cache is None:
-        model = SentenceTransformer(config.MODEL_NAME)
+        model = SentenceTransformer(config.MODEL_NAME, device=config.select_device())
         client = chromadb.PersistentClient(path=_CHROMA_DIR)
         collection = client.get_or_create_collection(
             name=config.COLLECTION, embedding_function=None

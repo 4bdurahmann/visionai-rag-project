@@ -86,7 +86,7 @@ def main():
     parser.add_argument("--k", type=int, default=5)
     args = parser.parse_args()
 
-    model = SentenceTransformer(MODEL_NAME, device="cpu")
+    model = SentenceTransformer(MODEL_NAME, device=config.select_device())
     client = chromadb.PersistentClient(path=DEFAULT_DB)
     collection = client.get_collection("guidelines")
     retriever = HybridRetriever(collection, strategy="hybrid")

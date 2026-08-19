@@ -47,6 +47,18 @@ MODEL_NAME = "NeuML/pubmedbert-base-embeddings"
 COLLECTION = "guidelines"
 
 
+def select_device() -> str:
+    """Pick the torch device for the local embedding model.
+
+    Defaults to CPU so the server runs identically on any machine (no CUDA /
+    MPS driver required - the PubMedBERT model is small and CPU is plenty).
+    Override with ``DEVICE=cuda`` / ``DEVICE=mps`` in ``.env`` when you want
+    the model on a GPU, or ``DEVICE=cpu`` to force CPU.
+    """
+    device = os.environ.get("DEVICE", "").strip().lower()
+    return device if device in {"cuda", "mps", "cpu"} else "cpu"
+
+
 class Settings(BaseSettings):
     """Environment-backed settings, mirroring the friend's project config.
 
