@@ -235,9 +235,15 @@ def _has_key(provider: str) -> bool:
 
 
 def _provider() -> Provider:
-    """Resolve the active provider: env override, else autodetect."""
+    """Resolve the active provider: env override, else autodetect.
+
+    An explicit ``LLM_PROVIDER`` is honored only when its key is actually
+    present; if the forced provider has no key, we fall back to autodetect so
+    a half-configured machine (e.g. only GROQ_API_KEY) still works instead of
+    failing with 'provider configured but KEY not set'.
+    """
     p = os.environ.get("LLM_PROVIDER", "auto").strip().lower()
-    if p in _PRIORITY:
+    if p in _PRIORITY and _has_key(p):
         return p  # type: ignore[return-value]
     for cand in _PRIORITY:
         if _has_key(cand):
