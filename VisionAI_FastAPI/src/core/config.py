@@ -1,43 +1,24 @@
 """
 Project-wide configuration.
 
-Adopts the friend's pydantic-settings ``Settings``/``get_settings()`` pattern
-(project metadata + API keys read from the project-root ``.env``), while
-keeping the path constants every module depends on (``DATA_DIR``,
-``DEFAULT_DB``, ``MODEL_NAME`` ...) and the minimal ``load_env()`` seeding.
+Keeps the pydantic-settings ``Settings``/``get_settings()`` pattern (project
+metadata + API keys read from the project-root ``.env``) and the minimal
+``load_env()`` seeding.
 
-Metadata fields are optional with defaults so the server never 500s when
-``.env`` is incomplete; the rest of the codebase reads secrets through
-``os.environ`` (as seeded by ``load_env()`` / ``Settings``).
+Paths are intentionally NOT stored here. Every module resolves the ones it
+needs relative to its own file with ``os.path.join`` / ``os.path.abspath``
+(the same portable style as the friend's ``llm.py``), so the project runs on
+any machine regardless of where it is installed.
 """
 
 import os
-from pathlib import Path
 
 from pydantic_settings import BaseSettings
 
-# --- layout ---------------------------------------------------------------
-#   <project root>/           .env
-#   <project root>/src/      core/config.py, data/, modules/...
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-SRC_DIR = PROJECT_ROOT / "src"
-ENV_FILE = PROJECT_ROOT / ".env"
-
-# --- data -----------------------------------------------------------------
-DATA_DIR = SRC_DIR / "data"
-CHROMA_DIR = SRC_DIR / "modules" / "chroma_db" / "chroma_data"
-DEFAULT_DB = str(CHROMA_DIR)
-COLLECTION = "guidelines"
-
-# --- source documents & artifacts -----------------------------------------
-SOURCE_DOC_JSON = str(DATA_DIR / "healthy-diet-phys-activity-high-risk-final-rec.json")
-SOURCE_DOC_PDF = str(SRC_DIR / "assets" / "healthy-diet-phys-activity-high-risk-final-rec.pdf")
-EMBEDDED_CHUNKS = str(DATA_DIR / "embedded_chunks.json")
-EVAL_QUESTIONS = str(DATA_DIR / "eval_questions.json")
-ACCURACY_JSON = str(DATA_DIR / "accuracy_results.json")
-
-# --- models ---------------------------------------------------------------
-MODEL_NAME = "NeuML/pubmedbert-base-embeddings"
+# --- .env location (resolved relative to this file) -----------------------
+ENV_FILE = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".env")
+)
 
 
 def load_env() -> None:
@@ -61,65 +42,47 @@ def load_env() -> None:
 load_env()
 
 
+# --- non-path settings ----------------------------------------------------
+MODEL_NAME = "NeuML/pubmedbert-base-embeddings"
+COLLECTION = "guidelines"
+
+
+def select_device() -> str:
+    """Pick the torch device for the local embedding model.
+
+    Defaults to CPU so the server runs identically on any machine (no CUDA /
+    MPS driver required - the PubMedBERT model is small and CPU is plenty).
+    Override with ``DEVICE=cuda`` / ``DEVICE=mps`` in ``.env`` when you want
+    the model on a GPU, or ``DEVICE=cpu`` to force CPU.
+    """
+    device = os.environ.get("DEVICE", "").strip().lower()
+    return device if device in {"cuda", "mps", "cpu"} else "cpu"
+
+
 class Settings(BaseSettings):
     """Environment-backed settings, mirroring the friend's project config.
 
-    All fields are optional with safe defaults so an incomplete ``.env`` never
-    breaks the server. List fields accept JSON in the env var, e.g.
-    ``PROJECT_ORGANIZERS=["Org A","Org B"]``.
+    All metadata fields are optional with safe defaults so an incomplete
+    ``.env`` never breaks the server. List fields accept JSON in the env var,
+    e.g. ``PROJECT_ORGANIZERS=["Org A","Org B"]``.
     """
-
-    PROJECT_NAME:str
-    PROJECT_EVENT:str
-    PROJECT_ORGANIZERS:list
-    PROJECT_INSTRUCTORS:list
-    SUPERVISOR_TEAM:str
-    SUPERVISOR_MEMBER:list
-    PROJECT_DATE:str
-    LLAMAPARSE_APIKEY:str
-    GROQ_API_KEY:str
-    GROQ_MODEL:str
-
-    # PROJECT_NAME: str = "VisionAI Medical RAG"
-    # PROJECT_EVENT: str = "USPSTF Guideline Q&A"
-    # PROJECT_ORGANIZERS: list[str] = []
-    # PROJECT_INSTRUCTORS: list[str] = []
-    # SUPERVISOR_TEAM: str = "Clinical Advisory Team"
-    # SUPERVISOR_MEMBER: list[str] = []
-    # PROJECT_DATE: str = ""
-    # LLAMAPARSE_APIKEY: str = ""
-    # GROQ_API_KEY: str = ""
-    # GROQ_MODEL: str = "openai/gpt-oss-120b"
+    PROJECT_NAME: str = "VisionAI Medical RAG"
+    PROJECT_EVENT: str = "USPSTF Guideline Q&A"
+    PROJECT_ORGANIZERS: list = []
+    PROJECT_INSTRUCTORS: list = []
+    SUPERVISOR_TEAM: str = "Clinical Advisory Team"
+    SUPERVISOR_MEMBER: list = []
+    PROJECT_DATE: str = ""
+    LLAMAPARSE_APIKEY: str = ""
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
 
     class Config:
-        env_file = ".env"
+        # Absolute path so metadata/secrets resolve from any launch directory.
+        env_file = str(ENV_FILE)
         env_file_encoding = "utf-8"
         extra = "ignore"
 
 
 def get_settings() -> Settings:
     return Settings()
-
-
-
-# from pydantic_settings import BaseSettings
-
-# class Settings(BaseSettings):
-#     PROJECT_NAME:str
-#     PROJECT_EVENT:str
-#     PROJECT_ORGANIZERS:list
-#     PROJECT_INSTRUCTORS:list
-#     SUPERVISOR_TEAM:str
-#     SUPERVISOR_MEMBER:list
-#     PROJECT_DATE:str
-#     LLAMAPARSE_APIKEY:str
-#     GROQ_API_KEY:str
-#     GROQ_MODEL:str
-    
-#     class Config:
-#         env_file = ".env"
-
-
-
-# def get_settings():
-#     return Settings()
