@@ -1,22 +1,22 @@
 """
 Shared query pipeline: retrieval -> gating -> LLM answer -> quality scoring.
 
-Single source of truth for the flow used by the HTTP API (routes/api.py) and
-the interactive CLI (tools/query_chroma.py). Keeps the two entry points from
-drifting apart.
+Single source of truth for the flow used by the HTTP API (Routes/QueryRoute.py)
+and the interactive CLI (modules/llm/query_chroma.py). Keeps the two entry
+points from drifting apart.
 """
 
 import json
 
-from controllers.gate import disclaim, GRADE_LOOKAHEAD
-from controllers.grade import extract_grade
-from controllers.llm import (
+from core import config
+from modules.chroma_db.gate import disclaim, GRADE_LOOKAHEAD
+from modules.chroma_db.grade import extract_grade
+from modules.engine import get_engine
+from modules.llm.llm import (
     generate_answer,
     score_citation_accuracy,
     score_faithfulness,
 )
-from modules import config
-from modules.engine import get_engine
 
 
 def accuracy_summary(path: str = config.ACCURACY_JSON) -> str | None:

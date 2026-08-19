@@ -16,7 +16,7 @@ Usage:
 
 import argparse
 
-from controllers.query import answer_query, accuracy_summary
+from modules.pipeline import answer_query, accuracy_summary
 
 
 def main():

@@ -21,7 +21,7 @@ import os
 import re
 from pathlib import Path
 
-from controllers.llm import get_client, model_name
+from modules.llm.llm import get_client, model_name
 
 CATEGORIES = [
     "IN_SCOPE",

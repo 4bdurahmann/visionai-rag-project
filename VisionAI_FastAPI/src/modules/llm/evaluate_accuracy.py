@@ -36,10 +36,10 @@ from pathlib import Path
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-from controllers.retrieval import HybridRetriever
-from controllers.gate import disclaim, GRADE_LOOKAHEAD
-from controllers.llm import judge_answer
-from modules import config
+from core import config
+from modules.chroma_db.gate import disclaim, GRADE_LOOKAHEAD
+from modules.chroma_db.retrieval import HybridRetriever
+from modules.llm.llm import judge_answer
 
 DEFAULT_DB = config.DEFAULT_DB
 DEFAULT_MODEL = config.MODEL_NAME

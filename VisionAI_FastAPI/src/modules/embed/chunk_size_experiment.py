@@ -10,8 +10,8 @@ Relevance rule (same spirit as evaluate_accuracy.py): a retrieved chunk counts
 as relevant when its heading is one of the question's expected_sections OR its
 text contains any of the question's answer_terms.
 
-Does NOT touch the production index (data/chroma) - everything runs in
-memory, so the existing 37-chunk collection is left alone.
+Does NOT touch the production index (modules/chroma_db/chroma_data) - everything
+runs in memory, so the existing 37-chunk collection is left alone.
 
 Usage:
     python chunk_size_experiment.py [--sizes 200,400,600]
@@ -27,8 +27,8 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
 
-from tools.embed_guideline import load_and_chunk
-from modules import config
+from core import config
+from modules.embed.parse2embed import load_and_chunk
 
 SRC = Path(config.SOURCE_DOC_JSON)
 QS = Path(config.EVAL_QUESTIONS)

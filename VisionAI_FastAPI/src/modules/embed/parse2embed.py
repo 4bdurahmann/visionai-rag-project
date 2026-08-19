@@ -31,7 +31,7 @@ from pathlib import Path
 
 from sentence_transformers import SentenceTransformer
 
-from modules import config
+from core import config
 
 _TABLE_TITLE_RE = re.compile(r"^(Table|Figure)(\s+\d+)?[.:]")
 _SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")

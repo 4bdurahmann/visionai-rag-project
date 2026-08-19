@@ -11,34 +11,45 @@ Built around the USPSTF 2020 recommendation on *Behavioral Counseling to
 Promote a Healthy Diet and Physical Activity for CVD Prevention*
 (JAMA 2020;324(20):2069-2075).
 
+Structure follows a clean three-tier layout (`src/`):
+
 ```
 VISIONAI/
-├── controllers/     # core logic: retrieval, gating, grading, LLM, pipeline
-│   ├── gate.py          # confidence / out-of-scope disclaimer gates
-│   ├── grade.py         # recommendation-grade (A/B/C/D/I) extraction
-│   ├── retrieval.py     # hybrid BM25+vector retrieval (RRF fusion)
-│   ├── llm.py           # multi-provider prompts, generation, quality scoring
-│   └── query.py         # shared query pipeline (retrieve → gate → answer → score)
-├── modules/         # shared infrastructure
-│   ├── config.py        # paths + .env loader
-│   ├── engine.py        # lazy singletons: embedding model, Chroma, retriever
-│   └── schemas.py       # API request/response Pydantic models
-├── routes/
-│   └── api.py           # FastAPI router: /health, /query
-├── tools/            # CLI utilities (run as `python -m tools.<name>`)
-│   ├── embed_guideline.py    # chunk + embed the JSON source into vectors
-│   ├── index_chroma.py       # index embedded chunks into Chroma
-│   ├── query_chroma.py       # interactive Q&A in the terminal
-│   ├── evaluate_accuracy.py  # accuracy vs ground-truth eval set
-│   ├── refusal_quality.py    # grades refusal messages on a 3-point rubric
-│   ├── classify_question.py  # labels question categories
-│   └── chunk_size_experiment.py  # P@5 sweep over chunk size/overlap
-├── data/             # source documents + artifacts (partly gitignored)
-├── history/          # Q&A transcripts / run logs
-├── main.py           # FastAPI app entry point
+├── src/
+│   ├── controllers/      # API request/response Pydantic models
+│   │   ├── queryControllers.py    # QueryRequest
+│   │   ├── hitControllers.py      # HitModel (retrieved source)
+│   │   └── responseControllers.py # QueryResponse + QualityReport
+│   ├── core/
+│   │   └── config.py      # paths, .env loader, project metadata
+│   ├── modules/           # domain libraries
+│   │   ├── chroma_db/     # vector store layer
+│   │   │   ├── retrieval.py   # hybrid BM25+vector retrieval (RRF fusion)
+│   │   │   ├── gate.py        # confidence / out-of-scope disclaimer gates
+│   │   │   ├── grade.py       # recommendation-grade (A/B/C/D/I) extraction
+│   │   │   ├── chroma_db.py   # index embedded chunks into Chroma
+│   │   │   └── chroma_data/   # built index (gitignored)
+│   │   ├── embed/
+│   │   │   ├── parse2embed.py          # chunk + embed the JSON source
+│   │   │   └── chunk_size_experiment.py# P@5 sweep over chunk size/overlap
+│   │   ├── llm/
+│   │   │   ├── llm.py            # multi-provider prompts, generation, scoring
+│   │   │   ├── query_chroma.py   # interactive Q&A in the terminal
+│   │   │   ├── evaluate_accuracy.py # accuracy vs ground-truth eval set
+│   │   │   ├── refusal_quality.py   # grades refusal messages (3-point rubric)
+│   │   │   └── classify_question.py # labels question categories
+│   │   └── engine.py       # lazy singletons: embedding model, Chroma, retriever
+│   │   └── pipeline.py     # shared query pipeline (retrieve → gate → answer → score)
+│   ├── Routes/
+│   │   ├── QueryRoute.py   # FastAPI router: /health, /query (+ lifespan)
+│   │   └── RootRoute.py    # root route with project metadata
+│   ├── data/               # source documents + eval artifacts (partly gitignored)
+│   ├── assets/             # original source PDF
+│   └── main.py             # FastAPI app entry point
 ├── requirements.txt
-├── .env.example      # copy to .env and fill in LLM keys
-└── LICENSE
+├── .env.example            # copy to .env and fill in LLM keys
+├── LICENSE
+└── output.txt              # sample Q&A transcript
 ```
 
 ## Quick start
@@ -52,14 +63,21 @@ python -m venv rag && source rag/bin/activate
 pip install -r requirements.txt
 
 # 3. build the index (one-time)
-python -m tools.embed_guideline --org USPSTF --doc-title "USPSTF 2020 behavioral counseling recommendation"
-python -m tools.index_chroma
+cd src
+python -m modules.embed.parse2embed --org USPSTF \
+    --doc-title "USPSTF 2020 behavioral counseling recommendation"
+python -m modules.chroma_db.chroma_db
 
-# 4. ask questions
-python -m tools.query_chroma "What is the letter grade of this recommendation?"
+# 4. ask questions (inside src/)
+python -m modules.llm.query_chroma "What is the letter grade of this recommendation?"
 
-# 5. run the HTTP API
-python -m uvicorn main:app --host 0.0.0.0 --port 8000
+# 5. run the HTTP API from the project root (cd .. first)
+cd ..
+rag/bin/python -m uvicorn --app-dir src main:app --host 0.0.0.0 --port 8000
+
+#    ...or without --app-dir, from inside src/
+cd src && ../rag/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000
+
 curl -X POST http://localhost:8000/query \
      -H 'Content-Type: application/json' \
      -d '{"query":"How much physical activity should the counseling aim for?","k":5}'
@@ -111,16 +129,17 @@ zero-cost option.
 ## Evaluation
 
 ```bash
-# heuristic (retrieval + gating correctness) vs the 14-question eval set
-python -m tools.evaluate_accuracy --k 3 --strategy hybrid
+# run from src/ (commands assume the venv is active, or prefix rag/bin/python)
+cd src
+python -m modules.llm.evaluate_accuracy --k 3 --strategy hybrid
 
 # LLM-judged correctness (uses the configured LLM)
-python -m tools.evaluate_accuracy --k 3 --strategy hybrid --judge llm
+python -m modules.llm.evaluate_accuracy --k 3 --strategy hybrid --judge llm
 
 # refusal-quality grading on hard red-team cases
-python -m tools.refusal_quality
+python -m modules.llm.refusal_quality
 ```
 
 Latest run (per-question faithfulness / citation accuracy): see
 `output.txt` for a sample transcript. The eval reports are written to
-`data/accuracy_results.json`.
+`src/data/accuracy_results.json`.

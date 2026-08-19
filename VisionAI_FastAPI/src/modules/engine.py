@@ -13,8 +13,8 @@ from types import SimpleNamespace
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-from modules import config
-from controllers.retrieval import HybridRetriever
+from core import config
+from modules.chroma_db.retrieval import HybridRetriever
 
 
 def get_engine() -> SimpleNamespace:

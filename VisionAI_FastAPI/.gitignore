@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtualenv
+rag/
+history/
+
+# macOS
+.DS_Store
+
+# Secrets - never commit API keys
+.env
+
+# Generated / rebuildable artifacts (recreate via modules/):
+#   src/data/embedded_chunks.json      <- src/modules/embed/parse2embed.py
+#   src/modules/chroma_db/chroma_data/ <- src/modules/chroma_db/chroma_db.py
+#   src/data/accuracy_results.json     <- src/modules/llm/evaluate_accuracy.py
+src/data/embedded_chunks.json
+src/data/accuracy_results.json
+src/modules/chroma_db/chroma_data/
+
+# Sample Q&A transcripts (optional; keep if you want to track runs)
+# history/*.txt

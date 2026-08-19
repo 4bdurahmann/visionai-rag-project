@@ -28,7 +28,7 @@ skips Groq for the rest of the process. Keys are never hardcoded.
 """LLM integration: provider selection, answer generation, and quality scoring.
 
 Imported by the query pipeline and the CLI tools. Importing this module loads
-the project .env (see modules.config) so API keys are available without extra
+the project .env (see core.config) so API keys are available without extra
 setup.
 """
 
@@ -45,7 +45,7 @@ try:
 except ImportError:  # pragma: no cover - only needed when falling back
     OpenAI = None  # type: ignore[assignment]
 
-from modules.config import load_env  # loads project .env on health-check below
+from core.config import load_env  # loads project .env on health-check below
 
 load_env()
 

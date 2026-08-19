@@ -21,10 +21,10 @@ from pathlib import Path
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-from controllers.retrieval import HybridRetriever
-from controllers.gate import disclaim, GRADE_LOOKAHEAD, DEFAULT_SIM_THRESHOLD
-from controllers.llm import generate_answer, grade_refusal
-from modules import config
+from core import config
+from modules.chroma_db.gate import disclaim, GRADE_LOOKAHEAD, DEFAULT_SIM_THRESHOLD
+from modules.chroma_db.retrieval import HybridRetriever
+from modules.llm.llm import generate_answer, grade_refusal
 
 DEFAULT_DB = config.DEFAULT_DB
 MODEL_NAME = config.MODEL_NAME
