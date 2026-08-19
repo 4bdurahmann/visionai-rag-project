@@ -7,8 +7,8 @@ points from drifting apart.
 """
 
 import json
+import os
 
-from core import config
 from modules.chroma_db.gate import disclaim, GRADE_LOOKAHEAD
 from modules.chroma_db.grade import extract_grade
 from modules.engine import get_engine
@@ -18,8 +18,13 @@ from modules.llm.llm import (
     score_faithfulness,
 )
 
+# Local path (portable): accuracy_results.json lives in <project>/src/data/.
+_ACCURACY_JSON = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "data", "accuracy_results.json"
+)
 
-def accuracy_summary(path: str = config.ACCURACY_JSON) -> str | None:
+
+def accuracy_summary(path: str = _ACCURACY_JSON) -> str | None:
     """Human-readable model accuracy from the latest evaluation report."""
     try:
         with open(path, encoding="utf-8") as f:

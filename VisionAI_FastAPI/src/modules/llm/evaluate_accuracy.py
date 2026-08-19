@@ -31,7 +31,7 @@ Usage:
 
 import argparse
 import json
-from pathlib import Path
+import os
 
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -41,10 +41,13 @@ from modules.chroma_db.gate import disclaim, GRADE_LOOKAHEAD
 from modules.chroma_db.retrieval import HybridRetriever
 from modules.llm.llm import judge_answer
 
-DEFAULT_DB = config.DEFAULT_DB
+# Local paths (portable), resolved relative to this file:
+#   chroma_data in <root>/src/modules/chroma_db/; data files in <root>/src/data/.
+_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_DB = os.path.join(_DIR, "..", "chroma_db", "chroma_data")
 DEFAULT_MODEL = config.MODEL_NAME
-DEFAULT_QUESTIONS = config.EVAL_QUESTIONS
-DEFAULT_OUT = config.ACCURACY_JSON
+DEFAULT_QUESTIONS = os.path.join(_DIR, "..", "..", "data", "eval_questions.json")
+DEFAULT_OUT = os.path.join(_DIR, "..", "..", "data", "accuracy_results.json")
 
 
 def judge(query, hits, disclaim_msg, q) -> tuple[bool, str]:

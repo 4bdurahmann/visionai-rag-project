@@ -19,21 +19,26 @@ Usage:
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 import chromadb
 
-from core import config
 from modules.chroma_db.grade import extract_grade
+
+# Local paths (portable), resolved relative to this file:
+#   chroma_data/ sits beside this module; embedded_chunks.json in <root>/src/data.
+_DIR = os.path.dirname(os.path.abspath(__file__))
+_DEFAULT_DB = os.path.join(_DIR, "chroma_data")
+_DEFAULT_CHUNKS = os.path.join(_DIR, "..", "..", "data", "embedded_chunks.json")
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Index embedded_chunks.json into a persistent Chroma collection."
     )
-    default_chunks = Path(config.EMBEDDED_CHUNKS)
-    parser.add_argument("--chunks", default=str(default_chunks))
-    parser.add_argument("--db", default=config.DEFAULT_DB)
+    parser.add_argument("--chunks", default=_DEFAULT_CHUNKS)
+    parser.add_argument("--db", default=_DEFAULT_DB)
     parser.add_argument("--collection", default="guidelines")
     parser.add_argument("--doc-id", default=None, help="slug identifying this doc (default: chunks file stem)")
     args = parser.parse_args()

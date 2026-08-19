@@ -17,9 +17,7 @@ Usage:
 """
 import argparse
 import json
-import os
 import re
-from pathlib import Path
 
 from modules.llm.llm import get_client, model_name
 

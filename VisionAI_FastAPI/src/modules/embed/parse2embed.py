@@ -26,12 +26,10 @@ access to huggingface.co.
 
 import argparse
 import json
+import os
 import re
-from pathlib import Path
 
 from sentence_transformers import SentenceTransformer
-
-from core import config
 
 _TABLE_TITLE_RE = re.compile(r"^(Table|Figure)(\s+\d+)?[.:]")
 _SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
@@ -262,9 +260,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Chunk + embed a LlamaParse guideline JSON for a vector store."
     )
-    default_json = Path(config.SOURCE_DOC_JSON)
-    parser.add_argument("json_path", nargs="?", default=str(default_json))
-    default_output = config.EMBEDDED_CHUNKS
+    # Local paths (portable), resolved relative to this file:
+    # the LlamaParse JSON and embedded output live in <root>/src/data/.
+    _DATA_DIR = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "..", "data"
+    )
+    default_json = os.path.join(
+        _DATA_DIR, "healthy-diet-phys-activity-high-risk-final-rec.json"
+    )
+    parser.add_argument("json_path", nargs="?", default=default_json)
+    default_output = os.path.join(_DATA_DIR, "embedded_chunks.json")
     parser.add_argument("-o", "--output", default=default_output)
     parser.add_argument("--org", default="USPSTF")
     parser.add_argument("--doc-title", default="")
