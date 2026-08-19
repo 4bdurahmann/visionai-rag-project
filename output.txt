@@ -1,0 +1,54 @@
+VisionAI Medical RAG - sample API transcript
+=============================================
+
+Command:
+    curl -X POST http://localhost:8000/query -H 'Content-Type: application/json' \
+         -d '{"query":"How much physical activity should the counseling aim for?","k":5}'
+
+
+Request:
+    POST /query   body: {"query": "How much physical activity should the counseling aim for?", "k": 5}
+
+Response (HTTP 200, ~7s):
+
+{
+  "query": "How much physical activity should the counseling aim for?",
+  "k": 5,
+  "strategy": "hybrid",
+  "disclaimed": false,
+  "reason": "none",
+  "message": "Counseling should aim for patients to achieve 90 to 180 minutes "
+             "per week of moderate to vigorous physical activity【1】【7】.",
+  "hits": [
+    {
+      "rank": 1,
+      "similarity": 0.8262,
+      "grade": "B",
+      "section": "Figure. Clinician Summary",
+      "page": 2,
+      "org": "USPSTF",
+      "text": "Table from section 'Figure. Clinician Summary'..."
+    }
+  ],
+  "quality": {
+    "faithfulness": 1.0,
+    "citation_accuracy": 1.0,
+    "unsupported_claims": [],
+    "bad_citations": []
+  },
+  "accuracy": "Model accuracy: 12/14 = 85.7% (hybrid, top-3)"
+}
+
+
+Refusal example (out-of-scope):
+
+    POST /query   body: {"query": "Should my patient with high LDL cholesterol take a statin?"}
+
+  -> "disclaimed": true,
+     "reason": "no_grade_for_decision",
+     "message": "I'm just a demo medical chatbot. This looks like a clinical
+                 recommendation question, but I couldn't find a graded
+                 recommendation (A/B/C/D/I) covering it in the guideline
+                 sources I cover..."
+
+(Transcripts of your own runs can be kept in history/.)

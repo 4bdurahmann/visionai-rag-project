@@ -10,7 +10,7 @@ Relevance rule (same spirit as evaluate_accuracy.py): a retrieved chunk counts
 as relevant when its heading is one of the question's expected_sections OR its
 text contains any of the question's answer_terms.
 
-Does NOT touch the production index (src/data/chroma) - everything runs in
+Does NOT touch the production index (data/chroma) - everything runs in
 memory, so the existing 37-chunk collection is left alone.
 
 Usage:
@@ -27,11 +27,12 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
 
-from embed_guideline import load_and_chunk
+from tools.embed_guideline import load_and_chunk
+from modules import config
 
-SRC = Path(__file__).resolve().parent / "data" / "healthy-diet-phys-activity-high-risk-final-rec.json"
-QS = Path(__file__).resolve().parent / "data" / "eval_questions.json"
-MODEL = "NeuML/pubmedbert-base-embeddings"
+SRC = Path(config.SOURCE_DOC_JSON)
+QS = Path(config.EVAL_QUESTIONS)
+MODEL = config.MODEL_NAME
 RRF_K = 60
 TOKEN_RE = __import__("re").compile(r"[a-z0-9]+")
 

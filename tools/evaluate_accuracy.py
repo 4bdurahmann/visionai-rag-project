@@ -21,7 +21,7 @@ Groq LLM verdict (GROQ_API_KEY required); out-of-scope questions are still
 judged by whether the disclaimer fired.
 
 Output:
-  src/data/accuracy_results.json  - overall accuracy + per-question detail
+  data/accuracy_results.json - overall accuracy + per-question detail
 
 Usage:
     python evaluate_accuracy.py [--k 3] [--strategy hybrid|vector]
@@ -36,14 +36,15 @@ from pathlib import Path
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-from retrieval import HybridRetriever
-from gate import disclaim, GRADE_LOOKAHEAD
-from llm import judge_answer
+from controllers.retrieval import HybridRetriever
+from controllers.gate import disclaim, GRADE_LOOKAHEAD
+from controllers.llm import judge_answer
+from modules import config
 
-DEFAULT_DB = str(Path(__file__).resolve().parent / "data" / "chroma")
-DEFAULT_MODEL = "NeuML/pubmedbert-base-embeddings"
-DEFAULT_QUESTIONS = str(Path(__file__).resolve().parent / "data" / "eval_questions.json")
-DEFAULT_OUT = str(Path(__file__).resolve().parent / "data" / "accuracy_results.json")
+DEFAULT_DB = config.DEFAULT_DB
+DEFAULT_MODEL = config.MODEL_NAME
+DEFAULT_QUESTIONS = config.EVAL_QUESTIONS
+DEFAULT_OUT = config.ACCURACY_JSON
 
 
 def judge(query, hits, disclaim_msg, q) -> tuple[bool, str]:

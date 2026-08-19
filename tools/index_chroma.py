@@ -23,16 +23,17 @@ from pathlib import Path
 
 import chromadb
 
-from grade import extract_grade
+from controllers.grade import extract_grade
+from modules import config
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Index embedded_chunks.json into a persistent Chroma collection."
     )
-    default_chunks = Path(__file__).resolve().parent / "data" / "embedded_chunks.json"
+    default_chunks = Path(config.EMBEDDED_CHUNKS)
     parser.add_argument("--chunks", default=str(default_chunks))
-    parser.add_argument("--db", default=str(default_chunks.parent / "chroma"))
+    parser.add_argument("--db", default=config.DEFAULT_DB)
     parser.add_argument("--collection", default="guidelines")
     parser.add_argument("--doc-id", default=None, help="slug identifying this doc (default: chunks file stem)")
     args = parser.parse_args()
@@ -60,6 +61,7 @@ def main():
             "chunk_index": i,
             "type": c.get("type"),
             "heading": c.get("heading"),
+            "page": c.get("page"),
         }
         for k in ("org", "doc_title", "source_url"):
             if c.get(k):

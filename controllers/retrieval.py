@@ -2,9 +2,8 @@
 Medical RAG - Shared retrieval backends (vector-only and hybrid BM25+vector)
 ---------------------------------------------------------------------------
 Both strategies query a Chroma collection. In hybrid mode, BM25 candidates are
-used as a recall extension, but hits are always ranked by pure vector cosine
-similarity (the RRF-fused score is still reported for reference but does not
-drive the ordering).
+used as a recall extension and hits are ranked by an RRF-fused score, so exact
+numbers/names that a pure semantic ranking would bury still surface.
 
 Embedding space is cosine with normalized vectors (see index_chroma.py), so
 vector similarity = 1 - distance.
@@ -55,9 +54,10 @@ class HybridRetriever:
     def search(self, query_text: str, query_vector, k: int, depth: int = 40):
         """
         Return up to k results as list of (cid, sim, fused, doc, meta).
-        sim   - cosine similarity from the vector ranking (the ordering key)
-        fused - RRF score over vector + BM25 ranks (reported for reference only)
-        Ranking order is always by descending vector similarity.
+        sim   - cosine similarity from the vector ranking (reported for reference)
+        fused - RRF score over vector + BM25 ranks; the ordering key in hybrid
+                mode (equals sim in vector mode).
+        Ranking order is the strategy's order.
         """
         depth = max(depth, k)
 
@@ -91,9 +91,10 @@ class HybridRetriever:
         for rank, cid in enumerate(bm25_ranks):
             fused[cid] = fused.get(cid, 0.0) + 1.0 / (RRF_K + rank + 1)
 
-        # rank by pure vector similarity (the fused score is still reported for
-        # reference but no longer drives the ordering)
-        ordered = sorted(vector_sims, key=vector_sims.get, reverse=True)
+        # rank by the RRF-fused score: vector similarity catches semantic
+        # matches while BM25 promotes exact-number/name evidence chunks that a
+        # pure semantic ranking can bury (e.g. "pooled RR, 0.81").
+        ordered = [cid for cid, _ in sorted(fused.items(), key=lambda x: x[1], reverse=True)]
         return self._to_hits(ordered[:k], vector_sims, fused)
 
     def _to_hits(self, ordered: list[str], vector_sims: dict, fused: dict):

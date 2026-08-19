@@ -31,6 +31,8 @@ from pathlib import Path
 
 from sentence_transformers import SentenceTransformer
 
+from modules import config
+
 _TABLE_TITLE_RE = re.compile(r"^(Table|Figure)(\s+\d+)?[.:]")
 _SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
 _TOKEN_PER_WORD = 1.35  # rough EN word->token heuristic (no tokenizer dependency)
@@ -150,6 +152,7 @@ def  load_and_chunk(json_path: str, doc_meta: dict | None = None,
     pages = data["pages"]
     chunks = []
     current_heading = None
+    current_page = None
     current_buffer = []
     pending_caption = None
 
@@ -163,6 +166,7 @@ def  load_and_chunk(json_path: str, doc_meta: dict | None = None,
                             {
                                 "type": "section",
                                 "heading": current_heading,
+                                "page": current_page,
                                 "text": piece,
                                 **doc_meta,
                             }
@@ -172,12 +176,14 @@ def  load_and_chunk(json_path: str, doc_meta: dict | None = None,
                         {
                             "type": "section",
                             "heading": current_heading,
+                            "page": current_page,
                             "text": text,
                             **doc_meta,
                         }
                     )
 
     for p in pages:
+        current_page = p.get("page_number")
         for it in p["items"]:
             t = it["type"]
             if t == "heading":
@@ -215,6 +221,7 @@ def  load_and_chunk(json_path: str, doc_meta: dict | None = None,
                         {
                             "type": "table",
                             "heading": heading,
+                            "page": current_page,
                             "text": row_text,
                             **doc_meta,
                         }
@@ -255,13 +262,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Chunk + embed a LlamaParse guideline JSON for a vector store."
     )
-    default_json = (
-        Path(__file__).resolve().parent
-        / "data"
-        / "healthy-diet-phys-activity-high-risk-final-rec.json"
-    )
+    default_json = Path(config.SOURCE_DOC_JSON)
     parser.add_argument("json_path", nargs="?", default=str(default_json))
-    default_output = str(Path(default_json).parent / "embedded_chunks.json")
+    default_output = config.EMBEDDED_CHUNKS
     parser.add_argument("-o", "--output", default=default_output)
     parser.add_argument("--org", default="USPSTF")
     parser.add_argument("--doc-title", default="")

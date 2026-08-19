@@ -111,9 +111,18 @@ def _graded_chunk_addresses_query(query_text: str, hits) -> bool:
     query_tokens = _content_tokens(query_text)
     if not query_tokens:
         return True
+    # A query about the guideline's OWN recommendation ("grade of THIS
+    # recommendation", "this recommendation applies to...") is asking about the
+    # retrieved document, not about a specific outside topic: any graded chunk
+    # satisfies the gate for it, and the clinical-content overlap check would
+    # wrongly reject it (the query names no clinical topic to match).
+    self_referential = re.search(r"\b(this|the|its|that|this)\b[\s\w,'\"-]*\brecommendation\b",
+                                 query_text, re.IGNORECASE) is not None
     for _cid, _sim, _fused, doc, meta in hits:
         if not meta.get("grade"):
             continue
+        if self_referential:
+            return True
         overlap = len(_content_tokens(doc) & query_tokens)
         if overlap >= MIN_GRADE_TOPIC_OVERLAP:
             return True
