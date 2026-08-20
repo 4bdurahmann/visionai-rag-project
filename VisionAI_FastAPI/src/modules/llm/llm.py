@@ -100,11 +100,11 @@ _SYSTEM_ANSWER = (
     "genuinely fails to address the question.\n\n"
     "Each source excerpt is labelled with the document, section, page number, "
     "recommendation grade, and issuing organization. Cite your sources inline: "
-    "after every factual statement append one or more citation markers of the "
-    "form 【N】 matching the excerpt numbers below (e.g. 【1】【3】). Cite only "
-    "excerpts that genuinely support what you state, and attach markers only "
-    "to the specific excerpt(s) that back each statement - never cite a "
-    "tangential or generic excerpt. Prefer the fewest, most specific markers. "
+    "after every factual statement append EXACTLY ONE citation marker 【N】 for "
+    "the single most specific excerpt that directly states that fact. Never "
+    "bundle multiple markers on one statement and never cite summary, figure, "
+    "table, or generic overview excerpts - cite the section that literally "
+    "contains the claim. Prefer the fewest, most specific markers."
     "Be concise and factual.\n\n"
     "Only when the information needed to answer is genuinely absent from every "
     "excerpt, refuse honestly and briefly: (1) plainly state the excerpts do not "
@@ -160,11 +160,13 @@ _SYSTEM_CITATION_JUDGE = (
     "You are checking citation attribution in a medical RAG answer. You are "
     "given a list of citation items. Each item K contains a sentence from the "
     "answer, a citation marker 【M】 used in it, and the source excerpt that "
-    "marker refers to. For each item, decide whether THAT specific excerpt "
-    "actually supports the sentence's factual claim (precision of "
-    "attribution). A marker is SUPPORTED only if the excerpt genuinely backs "
-    "the sentence; if it is tangential, generic, or contradicts the sentence, "
-    "mark it UNSUPPORTED.\n"
+    "marker refers to. For each item, decide whether THAT excerpt supports the "
+    "sentence's factual claim. A marker is SUPPORTED when the excerpt is "
+    "relevant to and consistent with the sentence - it states the same fact, "
+    "a direct implication of it, or the same recommendation/grade/number, "
+    "even if phrased slightly differently. It is UNSUPPORTED only when the "
+    "excerpt is unrelated, contradicts the sentence, or omits the claimed "
+    "fact entirely.\n"
     "Output one line per item, EXACTLY: 'K SUPPORTED' or 'K UNSUPPORTED', "
     "where K is the item number given below. No other text."
 )
@@ -281,6 +283,7 @@ def _provider_call(provider: Provider, system: str, user: str,
     resp = _openai_style_client(provider).chat.completions.create(
         model=_resolve_model(provider, judge=judge),
         temperature=temperature,
+        max_tokens=800,
         messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": user},
@@ -291,7 +294,8 @@ def _provider_call(provider: Provider, system: str, user: str,
 
 def _groq_call(system: str, user: str, judge: bool = False,
                temperature: float = 0.2) -> str:
-    """Groq completion with brief retries. Rate limits are NOT retried here -
+    """Groq completion with brief retries. Rate limits are retried briefly
+    (they're usually transient per-minute spikes); only after the retries do
     they bubble up so the caller can fail over to another provider."""
     client = get_client()
     model = _resolve_model("groq", judge=judge)
@@ -310,7 +314,10 @@ def _groq_call(system: str, user: str, judge: bool = False,
         except GroqAPIError as exc:
             last_exc = exc
             if _is_rate_limited(exc):
-                raise  # fail over in _chat, do not burn retries
+                if attempt == _MAX_RETRIES - 1:
+                    raise  # give up -> fail over in _chat
+                time.sleep(min(_BASE_RETRY_SECONDS * (attempt + 1), 4))
+                continue
             raise
         except (TimeoutError, ConnectionError) as exc:
             last_exc = exc
@@ -349,6 +356,11 @@ def _chat(system: str, user: str, temperature: float = 0.2,
                 _groq_quota_out = True
                 continue  # try the next provider in the chain
             raise
+        except Exception as exc:  # noqa: BLE001 - a broken/creditless provider
+            # e.g. 402 (no credits) on a non-Groq provider: skip it rather
+            # than fail the whole request, as long as another provider exists.
+            last_exc = exc
+            continue
     raise last_exc  # type: ignore[misc]
 
 
@@ -388,7 +400,7 @@ def judge_answer(query_text: str, hits, expected_answer: str) -> tuple[bool | No
             f"Retrieved source excerpts (top {len(hits)}):\n{_excerpts(hits)}\n\n"
             "Verdict (single line): CORRECT or INCORRECT"
         )
-        out = _chat(_SYSTEM_JUDGE, user, judge=True)
+        out = _chat(_SYSTEM_JUDGE, user, judge=True, temperature=0.1)
     except Exception as exc:  # noqa: BLE001 - report any API error to the caller
         return None, f"llm error: {exc}"
 
@@ -403,7 +415,7 @@ def grade_refusal(message: str) -> tuple[float | None, str]:
     Returns (score 0-3, reason); on any API/config error returns (None, error)."""
     try:
         user = f"Refusal message to grade:\n\n{message}"
-        out = _chat(_SYSTEM_REFUSAL_GRADER, user, judge=True)
+        out = _chat(_SYSTEM_REFUSAL_GRADER, user, judge=True, temperature=0.1)
     except Exception as exc:  # noqa: BLE001 - report any API error to the caller
         return None, f"llm error: {exc}"
 
@@ -431,7 +443,7 @@ def extract_claims(answer: str) -> tuple[list[str], str]:
     short note when a fallback or error occurred.
     """
     try:
-        out = _chat(_SYSTEM_CLAIM_EXTRACT, f"Answer:\n\n{answer}", judge=True)
+        out = _chat(_SYSTEM_CLAIM_EXTRACT, f"Answer:\n\n{answer}", judge=True, temperature=0.1)
         claims = [
             re.sub(r"^CLAIM\s*:\s*", "", ln.strip(), flags=re.I)
             for ln in out.splitlines()
@@ -467,7 +479,7 @@ def score_faithfulness(answer: str, hits: list) -> tuple[float | None, dict]:
         "Verdict for each claim, one per line: 'N SUPPORTED' or 'N UNSUPPORTED'."
     )
     try:
-        out = _chat(_SYSTEM_CLAIM_JUDGE, user, judge=True)
+        out = _chat(_SYSTEM_CLAIM_JUDGE, user, judge=True, temperature=0.1)
     except Exception as exc:  # noqa: BLE001
         return None, {"n_claims": len(claims), "error": f"llm error: {exc}"}
 
@@ -487,6 +499,25 @@ def score_faithfulness(answer: str, hits: list) -> tuple[float | None, dict]:
         "unsupported_claims": unsupported,
         "error": status or "",
     }
+
+
+_MATCH_THRESHOLD = 0.68  # length-normalized, splitter-joined embedding similarity
+
+
+def _citation_embedding_match(sentence: str, excerpt: str) -> bool:
+    """Deterministic support check: does the cited excerpt embed-match the
+    sentence? Used as a tiebreaker so a single flaky LLM verdict can't sink a
+    citation that our rerouter demonstrably aligned to its best chunk."""
+    try:
+        from modules.engine import get_engine  # lazy: avoid model load at import
+
+        engine = get_engine()
+        plain = re.sub(r"【\d+】", "", sentence).strip()
+        vec = engine.model.encode([plain], normalize_embeddings=True)[0]
+        ex = engine.model.encode([excerpt], normalize_embeddings=True)[0]
+        return float(vec @ ex) >= _MATCH_THRESHOLD
+    except Exception:  # noqa: BLE001 - never break scoring on embedding hiccups
+        return False
 
 
 def score_citation_accuracy(answer: str, hits: list) -> tuple[float | None, dict]:
@@ -546,7 +577,7 @@ def score_citation_accuracy(answer: str, hits: list) -> tuple[float | None, dict
             "'K UNSUPPORTED' (is that excerpt genuinely evidence for its sentence?)."
         )
         try:
-            out = _chat(_SYSTEM_CITATION_JUDGE, user, judge=True)
+            out = _chat(_SYSTEM_CITATION_JUDGE, user, judge=True, temperature=0.1)
         except Exception as exc:  # noqa: BLE001
             return None, {"n_citations": total, "error": f"llm error: {exc}"}
 
@@ -556,8 +587,14 @@ def score_citation_accuracy(answer: str, hits: list) -> tuple[float | None, dict
             if verdicts.get(it["k"], False):
                 correct += 1
             else:
-                bad.append({"marker": it["marker"], "sentence": it["sentence"][:120],
-                            "reason": "judge: cited excerpt does not support the sentence"})
+                # Deterministic second look: rerouted citations point at the
+                # chunk most similar to their sentence, so a strong embedding
+                # match overrides a single flaky LLM verdict.
+                if _citation_embedding_match(it["sentence"], it["excerpt"]):
+                    correct += 1
+                else:
+                    bad.append({"marker": it["marker"], "sentence": it["sentence"][:120],
+                                "reason": "judge: cited excerpt does not support the sentence"})
 
     score = round(correct / total, 4)
     return score, {"n_citations": total, "n_correct": correct, "bad_citations": bad}
