@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-6">
         
         {/* Main Navigation Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-16">
           
           {/* Column 1: Brand & Bio */}
           <div className="lg:col-span-2 space-y-4">
@@ -54,17 +54,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Column 4: Team */}
-          <div className="space-y-3">
-            <h4 className="font-bold text-sm text-white mb-2">Team</h4>
-            <ul className="space-y-2.5 text-xs text-[#9492C4]">
-              <li>Hossam Ibrahim</li>
-              <li>Abdulrahman</li>
-              <li className="pt-1"><span className="text-[#A5A3D4]">VISION AI TEAM</span></li>
-            </ul>
-          </div>
-
-          {/* Column 5: Contact */}
+          {/* Column 4: Project */}
           <div className="space-y-3">
             <h4 className="font-bold text-sm text-white mb-2">Project</h4>
             <ul className="space-y-2.5 text-xs text-[#9492C4]">

@@ -116,16 +116,24 @@ def _reroute_citations(message: str, hits_full: list) -> str:
     chunks and rewrites the marker to the most relevant one, so citations are
     precise and the citation judge stops flagging them. Sentences with no
     marker are untouched.
+
+    Grade-aware: when a sentence mentions a recommendation grade (A/B/C/D/I),
+    chunks whose ``grade`` metadata matches are boosted, so "graded B" points
+    at the chunk that actually states the grade rather than a generic table.
     """
     engine = get_engine()
     sents = [s for s in re.split(r"(?<=[.!?。])\s+|\n+", message) if s.strip()]
     if not sents or not any(_CITE_REF.search(s) for s in sents):
         return message
-    docs = [doc for (_cid, _sim, _fused, doc, _meta) in hits_full]
+    metas = [_meta for (_cid, _sim, _fused, _doc, _meta) in hits_full]
+    docs = [_doc for (_cid, _sim, _fused, _doc, _meta) in hits_full]
     try:
         doc_vecs = engine.model.encode(docs, normalize_embeddings=True)
     except Exception:  # noqa: BLE001 - never break the pipeline on embedding hiccups
         return message
+
+    # matches "graded B", "grade B", "graded as B", with optional **bold**
+    _SENT_GRADE_RE = re.compile(r"\bGrad[ei]d?(?:\s+as)?\s+\*{0,2}([ABCDI])\b", flags=re.I)
 
     out: list[str] = []
     for sent in sents:
@@ -139,8 +147,32 @@ def _reroute_citations(message: str, hits_full: list) -> str:
             out.append(sent)
             continue
         scores = doc_vecs @ vec
+        orig_markers = [int(m) for m in _CITE_REF.findall(sent)]
+        grade_m = _SENT_GRADE_RE.search(plain)
+        grade = grade_m.group(1).upper() if grade_m else None
+        if grade_m:
+            for i, meta in enumerate(metas):
+                if (meta.get("grade") or "").upper() == grade:
+                    scores[i] += 0.10  # small deterministic boost
         best = int(np.argmax(scores)) + 1  # 1-based chunk number
-        out.append(_CITE_REF.sub(f"【{best}】", sent))
+
+        # Keep the LLM's own citation (usually correct) unless it is clearly
+        # worse than the best candidate, and never override a grade-consistent
+        # marker — over-eager re-pointing sent "graded B" to a rationale table.
+        valid = [o for o in orig_markers if 1 <= o <= len(scores)]
+        grade_ok = grade is not None and any(
+            (metas[o - 1].get("grade") or "").upper() == grade for o in valid
+        )
+        clearly_worse = valid and all(
+            float(scores[o - 1]) < float(scores[best - 1]) - 0.02 for o in valid
+        )
+        if grade_ok:
+            keep = valid[0]
+        elif clearly_worse:
+            keep = best
+        else:
+            keep = valid[0] if valid else best
+        out.append(_CITE_REF.sub(f"【{keep}】", sent))
     return "\n".join(out)
 
 
