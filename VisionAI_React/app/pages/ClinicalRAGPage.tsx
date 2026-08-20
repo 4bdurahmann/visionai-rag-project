@@ -101,8 +101,11 @@ const ClinicalRAGPage: React.FC = () => {
 
             {!started && !loading ? (
               <div className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-8 md:p-10 text-center">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white text-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-900/10">
-                  ✳
+                <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-900/10">
+                  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" aria-hidden>
+                    <path d="M10.5 4h3v6.5H20v3h-6.5V20h-3v-6.5H4v-3h6.5V4z" />
+                    <circle cx="17.5" cy="6.5" r="1.6" />
+                  </svg>
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 tracking-tight">
                   Ready when you are
