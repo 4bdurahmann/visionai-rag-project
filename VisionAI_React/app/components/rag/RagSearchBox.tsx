@@ -15,7 +15,7 @@ const EXAMPLES = [
 
 const RagSearchBox: React.FC<RagSearchBoxProps> = ({ query, setQuery, onSearch, loading }) => {
   return (
-    <div className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-6 md:p-7">
+    <div className="bg-white/75 backdrop-blur-md rounded-[20px] border border-white/90 shadow-lg shadow-blue-900/5 p-6 md:p-7">
       <div className="flex items-center gap-2 mb-4">
         <span className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white text-xs font-bold flex items-center justify-center shadow-sm">
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>

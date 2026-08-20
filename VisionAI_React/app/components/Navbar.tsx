@@ -20,7 +20,6 @@ const Navbar: React.FC = () => {
           <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 transition-colors">How it works</a>
           <a href="#capabilities" className="text-gray-600 hover:text-gray-900 transition-colors">Capabilities</a>
           <a href="#evaluation" className="text-gray-600 hover:text-gray-900 transition-colors">Evaluation</a>
-          <a href="#team" className="text-gray-600 hover:text-gray-900 transition-colors">Team</a>
         </nav>
 
         {/* CTA Button */}

@@ -22,7 +22,7 @@ const Testimonials: React.FC = () => {
           {testimonialsData.map((item) => (
             <div
               key={item.id}
-              className="bg-white/80 backdrop-blur-md p-6 rounded-[28px] border border-white/90 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 min-h-[220px]"
+              className="bg-white/80 backdrop-blur-md p-6 rounded-[20px] border border-white/90 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 min-h-[220px]"
             >
               <div>
                 {/* User Info Header */}

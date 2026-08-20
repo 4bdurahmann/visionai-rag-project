@@ -23,7 +23,7 @@ const Steps: React.FC = () => {
           {stepsData.map((step) => (
             <div
               key={step.id}
-              className="relative bg-white/80 backdrop-blur-xl p-8 rounded-[32px] border border-white/90 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden group min-h-[260px]"
+              className="relative bg-white/80 backdrop-blur-xl p-8 rounded-[24px] border border-white/90 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden group min-h-[260px]"
             >
               {/* Big Faded Step Number on Top Right */}
               <span className="absolute top-2 right-6 text-8xl font-extrabold text-gray-200/50 select-none pointer-events-none group-hover:text-blue-100 transition-colors">

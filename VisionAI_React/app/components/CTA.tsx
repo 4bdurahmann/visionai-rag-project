@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 const CTA: React.FC = () => {
   return (
     <section className="w-full bg-[#0B0A1E] px-4 py-12">
-      <div className="max-w-[1400px] mx-auto bg-[#13112E] rounded-[36px] p-12 md:p-20 relative overflow-hidden flex flex-col items-center justify-center text-center">
+      <div className="max-w-[1400px] mx-auto bg-[#13112E] rounded-[26px] p-12 md:p-20 relative overflow-hidden flex flex-col items-center justify-center text-center">
         
         {/* Background Cross / Spark Decorative Graphic */}
         <div className="absolute right-[-40px] md:right-10 top-1/2 -translate-y-1/2 pointer-events-none opacity-20 text-[#3B387E]">

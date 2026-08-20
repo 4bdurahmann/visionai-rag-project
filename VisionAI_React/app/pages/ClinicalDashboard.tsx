@@ -1,6 +1,5 @@
 import React from 'react';
 import CTA from '~/components/CTA';
-import Doctors from '~/components/Doctors';
 import Footer from '~/components/Footer';
 import Hero from '~/components/Hero';
 import Navbar from '~/components/Navbar';
@@ -15,7 +14,6 @@ const ClinicalDashboard: React.FC = () => {
       <main>
         <Hero />
         <Services />
-        <Doctors />
         <Steps />
         <Testimonials />
         <CTA />

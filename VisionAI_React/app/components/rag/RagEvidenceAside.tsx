@@ -8,30 +8,32 @@ interface RagEvidenceAsideProps {
 
 const RagEvidenceAside: React.FC<RagEvidenceAsideProps> = ({ data, loading }) => {
   const hits = data?.hits ?? [];
-  const evidenceCount = Math.min(3, hits.length);
+  const evidenceCount = hits.length;
 
   if (loading) {
     return (
-      <aside className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-5 flex flex-col items-center justify-center gap-3 min-h-[200px]">
+      <aside className="bg-white/75 backdrop-blur-md rounded-[20px] border border-white/90 shadow-lg shadow-blue-900/5 p-5 flex flex-col items-center justify-center gap-3 min-h-[200px]">
         <span className="w-6 h-6 rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin" />
-        <p className="text-[11px] text-gray-500 font-medium">Analyzing retrieved sources…</p>
+        <p className="text-[11px] text-gray-500 font-medium">Retrieving evidence…</p>
       </aside>
     );
   }
 
   return (
-    <aside className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-5 space-y-5">
+    <aside className="bg-white/75 backdrop-blur-md rounded-[20px] border border-white/90 shadow-lg shadow-blue-900/5 p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 text-sm font-bold flex items-center justify-center">
+          <span className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white text-xs font-bold flex items-center justify-center shadow-sm">
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
               <path d="M6 0h9l5 5v19h-14V0zm8 5V2l3 3h-3z" />
               <path d="M9 9h9v1.5H9V9zm0 3h9v1.5H9V12zm0 3h9v1.5H9V15z" />
             </svg>
           </span>
-          <h3 className="text-sm font-bold text-gray-900">Evidence panel</h3>
+          <h3 className="text-sm font-bold text-gray-900">Retrieved evidence</h3>
         </div>
-        <span className="text-[11px] font-semibold text-gray-400">{evidenceCount} sources</span>
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+          {evidenceCount} {evidenceCount === 1 ? 'source' : 'sources'}
+        </span>
       </div>
 
       {hits.length === 0 ? (
@@ -41,9 +43,9 @@ const RagEvidenceAside: React.FC<RagEvidenceAsideProps> = ({ data, loading }) =>
             : 'Ask a question to see the retrieved guideline passages.'}
         </p>
       ) : (
-        <>
-          {hits.slice(0, 3).map((hit, i) => (
-            <div key={hit.rank} className="space-y-2">
+        <div className="space-y-3">
+          {hits.map((hit, i) => (
+            <div key={hit.rank} className="py-3 border-t border-gray-100 first:border-t-0 first:pt-1 space-y-2">
               <div className="flex items-center justify-between text-[11px] font-medium">
                 <span className="text-gray-700">
                   {i === 0 ? 'Top answer' : `Supporting ${i + 1}`}
@@ -68,15 +70,18 @@ const RagEvidenceAside: React.FC<RagEvidenceAsideProps> = ({ data, loading }) =>
                 {hit.page != null ? ` · page ${hit.page}` : ''}
                 <span className="font-mono text-gray-400"> · {hit.similarity.toFixed(4)}</span>
               </p>
+              <p className="text-[12px] leading-5 text-gray-600 bg-gray-50/80 border border-gray-100 rounded-lg p-2.5 line-clamp-4">
+                {hit.text}
+              </p>
             </div>
           ))}
 
-          <div className="pt-2 border-t border-gray-100">
+          <div className="pt-1">
             <p className="text-[11px] leading-5 text-gray-400">
               Retrieved via BM25 + PubMedBERT hybrid search.
             </p>
           </div>
-        </>
+        </div>
       )}
 
       {data?.disclaimed && (
