@@ -6,13 +6,17 @@ build/
 dist/
 
 # Virtualenv
-rag/
+VisionAI_FastAPI/rag/
 
 # macOS
 .DS_Store
 
 # Secrets - never commit API keys
 .env
+
+# Node
+node_modules/
+yarn.lock
 
 # Generated / rebuildable artifacts (recreate via tools/):
 #   data/embedded_chunks.json  <- tools/embed_guideline.py

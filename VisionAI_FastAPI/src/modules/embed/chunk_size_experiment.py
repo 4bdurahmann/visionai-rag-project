@@ -20,8 +20,8 @@ Usage:
 """
 import argparse
 import json
+import os
 from itertools import product
-from pathlib import Path
 
 import numpy as np
 from rank_bm25 import BM25Okapi
@@ -30,8 +30,10 @@ from sentence_transformers import SentenceTransformer
 from core import config
 from modules.embed.parse2embed import load_and_chunk
 
-SRC = Path(config.SOURCE_DOC_JSON)
-QS = Path(config.EVAL_QUESTIONS)
+# Local paths (portable), resolved relative to this file (<root>/src/data/).
+_DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "data")
+SRC = os.path.join(_DATA_DIR, "healthy-diet-phys-activity-high-risk-final-rec.json")
+QS = os.path.join(_DATA_DIR, "eval_questions.json")
 MODEL = config.MODEL_NAME
 RRF_K = 60
 TOKEN_RE = __import__("re").compile(r"[a-z0-9]+")
@@ -98,7 +100,7 @@ def main():
     args = parser.parse_args()
     sizes = [int(x) for x in args.sizes.split(",")]
     overlaps = [int(x) for x in args.overlaps.split(",")]
-    model = SentenceTransformer(MODEL)
+    model = SentenceTransformer(MODEL, device=config.select_device())
     run_sweep(sizes, overlaps, args.k, model)
 
 

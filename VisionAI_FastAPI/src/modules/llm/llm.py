@@ -28,8 +28,7 @@ skips Groq for the rest of the process. Keys are never hardcoded.
 """LLM integration: provider selection, answer generation, and quality scoring.
 
 Imported by the query pipeline and the CLI tools. Importing this module loads
-the project .env (see core.config) so API keys are available without extra
-setup.
+the project .env so API keys are available without extra setup.
 """
 
 import os
@@ -45,9 +44,30 @@ try:
 except ImportError:  # pragma: no cover - only needed when falling back
     OpenAI = None  # type: ignore[assignment]
 
-from core.config import load_env  # loads project .env on health-check below
+# --- portable .env loading ------------------------------------------------
+# Locate the project-root .env relative to THIS file with os.path.join /
+# os.path.abspath (the same self-contained method the friend's llm.py uses),
+# so the module resolves the correct .env on any machine or launch directory.
+_ENV_FILE = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".env")
+)
 
-load_env()
+
+def _load_dotenv(path: str = _ENV_FILE) -> None:
+    """Minimal ``KEY=VALUE`` loader for the project-root ``.env``."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, value = line.partition("=")
+                os.environ.setdefault(key.strip(), value.strip())
+    except OSError:
+        pass
+
+
+_load_dotenv()
 
 Provider = Literal["groq", "openai", "gemini", "openrouter", "alibaba"]
 
@@ -215,9 +235,15 @@ def _has_key(provider: str) -> bool:
 
 
 def _provider() -> Provider:
-    """Resolve the active provider: env override, else autodetect."""
+    """Resolve the active provider: env override, else autodetect.
+
+    An explicit ``LLM_PROVIDER`` is honored only when its key is actually
+    present; if the forced provider has no key, we fall back to autodetect so
+    a half-configured machine (e.g. only GROQ_API_KEY) still works instead of
+    failing with 'provider configured but KEY not set'.
+    """
     p = os.environ.get("LLM_PROVIDER", "auto").strip().lower()
-    if p in _PRIORITY:
+    if p in _PRIORITY and _has_key(p):
         return p  # type: ignore[return-value]
     for cand in _PRIORITY:
         if _has_key(cand):

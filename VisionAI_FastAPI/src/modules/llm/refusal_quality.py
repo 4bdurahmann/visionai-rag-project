@@ -15,8 +15,8 @@ Usage:
 """
 
 import argparse
+import os
 import textwrap
-from pathlib import Path
 
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -26,7 +26,10 @@ from modules.chroma_db.gate import disclaim, GRADE_LOOKAHEAD, DEFAULT_SIM_THRESH
 from modules.chroma_db.retrieval import HybridRetriever
 from modules.llm.llm import generate_answer, grade_refusal
 
-DEFAULT_DB = config.DEFAULT_DB
+# Local path (portable): chroma_data in <root>/src/modules/chroma_db/.
+DEFAULT_DB = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "chroma_db", "chroma_data"
+)
 MODEL_NAME = config.MODEL_NAME
 
 # Each case: (query, why it must be refused)
@@ -83,7 +86,7 @@ def main():
     parser.add_argument("--k", type=int, default=5)
     args = parser.parse_args()
 
-    model = SentenceTransformer(MODEL_NAME, device="cpu")
+    model = SentenceTransformer(MODEL_NAME, device=config.select_device())
     client = chromadb.PersistentClient(path=DEFAULT_DB)
     collection = client.get_collection("guidelines")
     retriever = HybridRetriever(collection, strategy="hybrid")

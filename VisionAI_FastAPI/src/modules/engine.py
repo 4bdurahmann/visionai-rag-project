@@ -8,6 +8,7 @@ first call to :func:`get_engine`, so CLI tools that do not need inference
 light, and the API does not pay the model-load cost at import time.
 """
 
+import os
 from types import SimpleNamespace
 
 import chromadb
@@ -15,6 +16,11 @@ from sentence_transformers import SentenceTransformer
 
 from core import config
 from modules.chroma_db.retrieval import HybridRetriever
+
+# Local path (portable): chroma_data lives next to this module.
+_CHROMA_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "chroma_db", "chroma_data"
+)
 
 
 def get_engine() -> SimpleNamespace:
@@ -25,8 +31,8 @@ def get_engine() -> SimpleNamespace:
         ``retriever`` attributes.
     """
     if get_engine.cache is None:
-        model = SentenceTransformer(config.MODEL_NAME)
-        client = chromadb.PersistentClient(path=config.DEFAULT_DB)
+        model = SentenceTransformer(config.MODEL_NAME, device=config.select_device())
+        client = chromadb.PersistentClient(path=_CHROMA_DIR)
         collection = client.get_or_create_collection(
             name=config.COLLECTION, embedding_function=None
         )

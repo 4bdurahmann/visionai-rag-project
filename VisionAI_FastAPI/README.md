@@ -21,7 +21,7 @@ VISIONAI/
 │   │   ├── hitControllers.py      # HitModel (retrieved source)
 │   │   └── responseControllers.py # QueryResponse + QualityReport
 │   ├── core/
-│   │   └── config.py      # paths, .env loader, project metadata
+│   │   └── config.py      # .env loader, project metadata, model name
 │   ├── modules/           # domain libraries
 │   │   ├── chroma_db/     # vector store layer
 │   │   │   ├── retrieval.py   # hybrid BM25+vector retrieval (RRF fusion)
@@ -71,12 +71,14 @@ python -m modules.chroma_db.chroma_db
 # 4. ask questions (inside src/)
 python -m modules.llm.query_chroma "What is the letter grade of this recommendation?"
 
-# 5. run the HTTP API from the project root (cd .. first)
-cd ..
+# 5. run the HTTP API from the project root
 rag/bin/python -m uvicorn --app-dir src main:app --host 0.0.0.0 --port 8000
 
 #    ...or without --app-dir, from inside src/
 cd src && ../rag/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000
+
+#    (the venv's activate scripts already point at VisionAI_FastAPI/rag,
+#     so `source rag/bin/activate && python` also works)
 
 curl -X POST http://localhost:8000/query \
      -H 'Content-Type: application/json' \
