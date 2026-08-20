@@ -23,7 +23,12 @@ const RagEvidenceAside: React.FC<RagEvidenceAsideProps> = ({ data, loading }) =>
     <aside className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-5 space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 text-sm font-bold flex items-center justify-center">📑</span>
+          <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 text-sm font-bold flex items-center justify-center">
+            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
+              <path d="M6 0h9l5 5v19h-14V0zm8 5V2l3 3h-3z" />
+              <path d="M9 9h9v1.5H9V9zm0 3h9v1.5H9V12zm0 3h9v1.5H9V15z" />
+            </svg>
+          </span>
           <h3 className="text-sm font-bold text-gray-900">Evidence panel</h3>
         </div>
         <span className="text-[11px] font-semibold text-gray-400">{evidenceCount} sources</span>

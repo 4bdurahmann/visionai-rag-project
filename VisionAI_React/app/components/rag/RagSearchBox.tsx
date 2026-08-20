@@ -18,7 +18,9 @@ const RagSearchBox: React.FC<RagSearchBoxProps> = ({ query, setQuery, onSearch, 
     <div className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-6 md:p-7">
       <div className="flex items-center gap-2 mb-4">
         <span className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-          ✳
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
+            <path d="M10.5 4h3v6.5H20v3h-6.5V20h-3v-6.5H4v-3h6.5V4z" />
+          </svg>
         </span>
         <div>
           <h2 className="text-sm font-bold text-gray-900 leading-tight">Ask a clinical question</h2>
@@ -28,15 +30,12 @@ const RagSearchBox: React.FC<RagSearchBoxProps> = ({ query, setQuery, onSearch, 
 
       <form onSubmit={onSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="flex-1 relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none" aria-hidden>
-            🔎
-          </span>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g. What does the USPSTF recommend for CVD risk factors?"
-            className="w-full rounded-full border border-gray-200 bg-white pl-11 pr-5 py-3.5 text-sm text-gray-900 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all shadow-xs"
+            className="w-full rounded-full border border-gray-200 bg-white px-5 py-3.5 text-sm text-gray-900 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all shadow-xs"
           />
         </div>
         <button

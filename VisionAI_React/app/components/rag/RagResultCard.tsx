@@ -6,7 +6,21 @@ interface RagResultCardProps {
   loading?: boolean;
 }
 
+function Tag({ level }: { level: { label: string; className: string } }) {
+  return (
+    <span className={`text-[10px] font-semibold uppercase tracking-wide rounded-full border px-2 py-0.5 ${level.className}`}>
+      {level.label}
+    </span>
+  );
+}
+
 const CITED_REF = /【([A-Za-z0-9]+)】/g;
+
+function confidenceLevel(score: number): { label: string; className: string } {
+  if (score >= 0.8) return { label: 'High', className: 'bg-emerald-50 text-emerald-700 border-emerald-100' };
+  if (score >= 0.6) return { label: 'Medium', className: 'bg-amber-50 text-amber-700 border-amber-100' };
+  return { label: 'Low', className: 'bg-red-50 text-red-700 border-red-100' };
+}
 
 function renderCitations(text: string) {
   const parts: React.ReactNode[] = [];
@@ -76,7 +90,7 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
             <h3 className="text-sm font-bold text-gray-900">Answer</h3>
           </div>
           <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-            hybrid · k={data.k}
+            Retrieved evidence · {data.hits.length}
           </span>
         </div>
         <p className="text-[15px] leading-7 text-gray-700 whitespace-pre-wrap">{renderCitations(data.message)}</p>
@@ -86,7 +100,7 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
       {data.hits.length > 0 && (
         <div className="space-y-3 border-t border-gray-100 pt-5">
           <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            Retrieved evidence · {data.hits.length}
+            Retrieved evidence
           </h4>
           <div className="space-y-2.5">
             {data.hits.map((hit) => (
@@ -115,33 +129,17 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
       {/* Quality */}
       {data.quality && (data.quality.citation_accuracy != null || data.quality.faithfulness != null) && (
         <div className="space-y-3 border-t border-gray-100 pt-4">
-          <div className="flex flex-wrap items-center gap-4 text-[11px] text-gray-500">
+          <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500">
             {data.quality.citation_accuracy != null && (
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-gray-600">Citation accuracy:</span>
-                <span className="font-mono font-bold text-gray-800">
-                  {(data.quality.citation_accuracy * 100).toFixed(0)}%
-                </span>
-                <span className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <span
-                    className="block h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
-                    style={{ width: `${Math.min(100, data.quality.citation_accuracy * 100)}%` }}
-                  />
-                </span>
+                <Tag level={confidenceLevel(data.quality.citation_accuracy)} />
               </div>
             )}
             {data.quality.faithfulness != null && (
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-gray-600">Faithfulness:</span>
-                <span className="font-mono font-bold text-gray-800">
-                  {(data.quality.faithfulness * 100).toFixed(0)}%
-                </span>
-                <span className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <span
-                    className="block h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
-                    style={{ width: `${Math.min(100, data.quality.faithfulness * 100)}%` }}
-                  />
-                </span>
+                <Tag level={confidenceLevel(data.quality.faithfulness)} />
               </div>
             )}
             {data.quality.unsupported_claims && data.quality.unsupported_claims.length > 0 && (
