@@ -1,19 +1,20 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { stepsData } from '../data/stepsData';
 
 const Steps: React.FC = () => {
   return (
-    <section className="w-full bg-gradient-to-b from-[#EBF0FA] via-[#F3E8FF]/30 to-[#EBF0FA] px-4 py-20">
+    <section id="how-it-works" className="w-full bg-gradient-to-b from-[#EBF0FA] via-[#F3E8FF]/30 to-[#EBF0FA] px-4 py-20">
       <div className="max-w-[1400px] mx-auto px-6">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-14 gap-6">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight max-w-md leading-tight">
-            Doctors Who Listen.<br />
-            Experts You Can Trust.
+            How It Works<br />
+            From Question to Cited Answer.
           </h2>
           <p className="text-gray-500 text-xs md:text-sm max-w-xs font-normal leading-relaxed">
-            Meet our dedicated team of healthcare professionals committed to providing exceptional care tailored to your needs.
+            A three-stage pipeline that retrieves, scores, and answers with traceable evidence.
           </p>
         </div>
 
@@ -47,10 +48,10 @@ const Steps: React.FC = () => {
               {/* Bottom Link */}
               <div className="relative z-10 pt-6">
                 <a
-                  href="#learn-more"
+                  href="#capabilities"
                   className="text-xs font-bold text-gray-900 hover:text-blue-600 transition-colors underline underline-offset-4 decoration-gray-300 hover:decoration-blue-600"
                 >
-                  Learn More
+                  See capability detail
                 </a>
               </div>
             </div>
@@ -59,9 +60,12 @@ const Steps: React.FC = () => {
 
         {/* Center Bottom Action Button */}
         <div className="flex justify-center">
-          <button className="bg-[#4F46E5] hover:bg-indigo-700 text-white font-medium px-8 py-3 rounded-full text-xs transition-all shadow-lg shadow-indigo-200">
-            Get Started
-          </button>
+          <Link
+            to="/clinical-rag"
+            className="bg-[#4F46E5] hover:bg-indigo-700 text-white font-medium px-8 py-3 rounded-full text-xs transition-all shadow-lg shadow-indigo-200"
+          >
+            Ask your first question
+          </Link>
         </div>
 
       </div>

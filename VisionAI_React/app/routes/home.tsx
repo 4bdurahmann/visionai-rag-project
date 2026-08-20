@@ -3,8 +3,8 @@ import type { Route } from "./+types/home";
 
 export function meta({ }: Route.MetaArgs) {
   return [
-    { title: "Clinical RAG System" },
-    { name: "description", content: "AI Powered Defect Detection System" },
+    { title: "VisionAI Medical RAG — Cited Answers Over Clinical Guidelines" },
+    { name: "description", content: "Cited, verifiable Q&A over clinical guidelines with hybrid retrieval, confidence gating, and multi-provider LLMs." },
   ];
 }
   

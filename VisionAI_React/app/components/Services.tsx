@@ -3,16 +3,16 @@ import { servicesData } from '../data/servicesData';
 
 const Services: React.FC = () => {
   return (
-    <section id="services" className="w-full bg-[#EBF0FA] px-4 py-16">
+    <section id="capabilities" className="w-full bg-[#EBF0FA] px-4 py-16">
       <div className="max-w-[1400px] mx-auto px-6">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight max-w-md leading-tight">
-            Medical Services You Can Rely On
+            Capabilities That Make<br />the Answers Trustworthy
           </h2>
           <p className="text-gray-500 text-xs md:text-sm max-w-xs font-normal leading-relaxed">
-            Comprehensive healthcare solutions designed to keep you and your family healthy at every stage of life.
+            A retrieval-augmented pipeline built for evidence integrity — from chunking to cited generation.
           </p>
         </div>
 
