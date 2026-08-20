@@ -54,7 +54,7 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
 
   if (loading) {
     return (
-      <div className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-8 flex flex-col items-center justify-center gap-3 min-h-[180px]">
+      <div className="bg-white/75 backdrop-blur-md rounded-[20px] border border-white/90 shadow-lg shadow-blue-900/5 p-8 flex flex-col items-center justify-center gap-3 min-h-[180px]">
         <span className="w-8 h-8 rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin" />
         <p className="text-xs text-gray-500 font-medium">Running retrieval + generation…</p>
       </div>
@@ -63,7 +63,7 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
 
   if (empty && data) {
     return (
-      <div className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-8">
+      <div className="bg-white/75 backdrop-blur-md rounded-[20px] border border-white/90 shadow-lg shadow-blue-900/5 p-8">
         <div className="flex items-center gap-2 mb-3">
           <span className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 text-sm font-bold flex items-center justify-center">!</span>
           <h3 className="text-sm font-bold text-gray-900">
@@ -81,7 +81,7 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
   }
 
   return (
-    <div className="bg-white/75 backdrop-blur-md rounded-[28px] border border-white/90 shadow-lg shadow-blue-900/5 p-6 md:p-7 space-y-6">
+    <div className="bg-white/75 backdrop-blur-md rounded-[20px] border border-white/90 shadow-lg shadow-blue-900/5 p-6 md:p-7 space-y-6">
       {/* Answer */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -90,41 +90,11 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
             <h3 className="text-sm font-bold text-gray-900">Answer</h3>
           </div>
           <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-            Retrieved evidence · {data.hits.length}
+            {data.k} retrieved
           </span>
         </div>
         <p className="text-[15px] leading-7 text-gray-700 whitespace-pre-wrap">{renderCitations(data.message)}</p>
       </div>
-
-      {/* Retrieved evidence */}
-      {data.hits.length > 0 && (
-        <div className="space-y-3 border-t border-gray-100 pt-5">
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            Retrieved evidence
-          </h4>
-          <div className="space-y-2.5">
-            {data.hits.map((hit) => (
-              <div key={hit.rank} className="rounded-2xl border border-gray-100 bg-white p-4 space-y-2 hover:shadow-sm transition-shadow">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-[11px] font-medium">
-                    <span className="bg-blue-50 text-blue-700 rounded-full px-2.5 py-0.5">{hit.org ?? 'Guideline'}</span>
-                    {hit.grade && (
-                      <span className="bg-emerald-50 text-emerald-700 rounded-full px-2.5 py-0.5">Grade {hit.grade}</span>
-                    )}
-                    <span className="text-gray-500">
-                      {hit.section ?? 'Guideline'} {hit.page != null ? `· p.${hit.page}` : ''}
-                    </span>
-                  </div>
-                  <span className="text-[11px] text-gray-400 font-mono">
-                    {hit.similarity.toFixed(4)}
-                  </span>
-                </div>
-                <p className="text-[13px] leading-6 text-gray-600 line-clamp-3">{hit.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Quality */}
       {data.quality && (data.quality.citation_accuracy != null || data.quality.faithfulness != null) && (

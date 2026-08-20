@@ -21,7 +21,7 @@ const Services: React.FC = () => {
           {servicesData.map((service) => (
             <div
               key={service.id}
-              className="bg-[#F8FAFC]/90 backdrop-blur-md p-8 rounded-[28px] border border-white/80 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
+              className="bg-[#F8FAFC]/90 backdrop-blur-md p-8 rounded-[20px] border border-white/80 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
             >
               <div>
                 {/* Top Icon & Number Row */}
