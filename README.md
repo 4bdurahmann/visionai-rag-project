@@ -133,8 +133,8 @@ python -m modules.llm.evaluate_accuracy --k 3 --strategy hybrid --judge llm
 python -m modules.llm.refusal_quality
 ```
 
-Latest run: **13/14 · 92.9%** (accuracy_results.json). A sample Q&A
-transcript is kept in `VisionAI_FastAPI/history/`.
+Latest run: **13/14 · 92.9%** (accuracy_results.json). Q&A run
+transcripts can be kept in `VisionAI_FastAPI/history/` (optional, gitignored).
 
 ## Frontend
 
