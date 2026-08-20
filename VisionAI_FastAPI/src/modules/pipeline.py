@@ -132,8 +132,10 @@ def _reroute_citations(message: str, hits_full: list) -> str:
     except Exception:  # noqa: BLE001 - never break the pipeline on embedding hiccups
         return message
 
-    # matches "graded B", "grade B", "graded as B", with optional **bold**
-    _SENT_GRADE_RE = re.compile(r"\bGrad[ei]d?(?:\s+as)?\s+\*{0,2}([ABCDI])\b", flags=re.I)
+    # matches "graded B", "grade B", "graded as B", "grade of B", bold variants
+    _SENT_GRADE_RE = re.compile(
+        r"\bGrad[ei]d?(?:\s+(?:as|of))?\s+\*{0,2}([ABCDI])\b", flags=re.I
+    )
 
     out: list[str] = []
     for sent in sents:
@@ -154,6 +156,20 @@ def _reroute_citations(message: str, hits_full: list) -> str:
             for i, meta in enumerate(metas):
                 if (meta.get("grade") or "").upper() == grade:
                     scores[i] += 0.10  # small deterministic boost
+        # Distinctive numbers (e.g. "90 to 180 minutes", "7.5%") should point at
+        # a chunk whose text actually contains them — semantics alone can prefer
+        # a table heading over the passage that carries the number.
+        nums = re.findall(
+            r"\d+(?:\.\d+)?(?:\s*(?:[-–—]|to|for)\s*\d+(?:\.\d+)?)?\s*"
+            r"(?:minutes?|percent|%|kg|counseling|week|sessions?|years)?",
+            plain,
+            flags=re.I,
+        )
+        num_hits = [n for n in nums if len(n) > 1]
+        if num_hits and not grade_m:
+            for i, doc in enumerate(docs):
+                if any(n in doc for n in num_hits):
+                    scores[i] += 0.15
         best = int(np.argmax(scores)) + 1  # 1-based chunk number
 
         # Keep the LLM's own citation (usually correct) unless it is clearly
