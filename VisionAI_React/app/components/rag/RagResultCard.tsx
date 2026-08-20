@@ -22,6 +22,14 @@ function confidenceLevel(score: number): { label: string; className: string } {
   return { label: 'Low', className: 'bg-red-50 text-red-700 border-red-100' };
 }
 
+function overallConfidence(quality: RagResponse['quality']): number | null {
+  const scores = [quality?.citation_accuracy, quality?.faithfulness].filter(
+    (v): v is number => typeof v === 'number'
+  );
+  if (scores.length === 0) return null;
+  return Math.min(...scores);
+}
+
 function renderCitations(text: string) {
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -100,18 +108,15 @@ const RagResultCard: React.FC<RagResultCardProps> = ({ data, loading }) => {
       {data.quality && (data.quality.citation_accuracy != null || data.quality.faithfulness != null) && (
         <div className="space-y-3 border-t border-gray-100 pt-4">
           <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500">
-            {data.quality.citation_accuracy != null && (
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-gray-600">Citation accuracy:</span>
-                <Tag level={confidenceLevel(data.quality.citation_accuracy)} />
-              </div>
-            )}
-            {data.quality.faithfulness != null && (
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-gray-600">Faithfulness:</span>
-                <Tag level={confidenceLevel(data.quality.faithfulness)} />
-              </div>
-            )}
+            {(() => {
+              const overall = overallConfidence(data.quality);
+              return overall != null && (
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-gray-600">Confidence:</span>
+                  <Tag level={confidenceLevel(overall)} />
+                </div>
+              );
+            })()}
             {data.quality.unsupported_claims && data.quality.unsupported_claims.length > 0 && (
               <div className="space-y-1.5 w-full">
                 <span className="font-semibold text-amber-700">Claims without full evidence support:</span>

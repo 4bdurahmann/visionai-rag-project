@@ -25,5 +25,6 @@ class QueryResponse(BaseModel):
     message: str
     hits: list[HitModel] = []
     quality: QualityReport | None = None
+    request_id: str | None = None
     accuracy: str | None = None
     error: str | None = None

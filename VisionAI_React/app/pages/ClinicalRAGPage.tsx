@@ -46,6 +46,7 @@ const ClinicalRAGPage: React.FC = () => {
           query: query.trim(),
           k: 5,
           strategy: 'hybrid',
+          score: false,
         }),
       });
 
@@ -56,6 +57,24 @@ const ClinicalRAGPage: React.FC = () => {
       const result: RagResponse = await response.json();
       setData(result);
       toast.success('Query processed successfully!');
+
+      if (result.request_id) {
+        fetch(`${API_URL}/query/score`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ request_id: result.request_id }),
+        })
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`Server returned ${r.status}`))))
+          .then((scored) => {
+            if (scored?.quality) {
+              setData((prev) => ({ ...prev, quality: scored.quality }));
+            }
+          })
+          .catch((err) => {
+            console.error('Score API Error:', err);
+            toast('Quality scoring unavailable for this answer');
+          });
+      }
     } catch (err: any) {
       console.error('API Error:', err);
       setData({

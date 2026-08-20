@@ -22,6 +22,7 @@ export interface RagResponse {
   message: string;
   hits: RagHit[];
   quality: RagQuality | null;
+  request_id?: string | null;
 }
 
 export const EXAMPLE_QUESTION =
